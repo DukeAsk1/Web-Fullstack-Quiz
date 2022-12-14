@@ -1,25 +1,11 @@
 from flask import Flask, request
 from flask_cors import CORS
 from jwt_utils import build_token,decode_token,secret
-import sqlite3
+import services
+
 
 app = Flask(__name__)
 CORS(app)
-
-file='tuto.db'
-
-def connect_to_db(path):
-    db_connection = sqlite3.connect(path)
-
-    # set the sqlite connection in "manual transaction mode"
-    # (by default, all execute calls are performed in their own transactions, not what we want)
-    db_connection.isolation_level = None
-    return db_connection
-
-# Exemple de création de classe en python
-class Question():
-	def init(self, title: str):
-		self.title = title
 
 @app.route('/')
 def hello_world():
@@ -39,29 +25,24 @@ def login():
     else:
         return "Unauthorized", 401
 
-@app.route('/add_questions',methods=['POST'])
-def question():
-    cur = connect_to_db(file)
-    #Récupérer le token envoyé en paramètre
-    request.headers.get('Authorization')
+@app.route('/questions',methods=['POST'])
+def postQuestions():
+   #Récupérer le token envoyé en paramètre
+    auth_token = request.headers.get('Authorization')
+    try :
+        decode_token(auth_token[7:])
+    except TypeError:
+        return {"message" : "Not authenticated"} ,401
+    except Exception as e:
+        return e.__dict__ ,401
 
     #récupèrer un l'objet json envoyé dans le body de la requète
-    payload = request.get_json()
+    question_json = request.get_json()
+    return services.post_question(question_json)
 
-    # start transaction
-    cur.execute("begin")
-
-    # save the question to db
-    cur.execute(
-        f"insert into Question (Title) values"
-        f"('{payload.title}')")
-
-    # send the request
-    cur.execute("commit")
-
-    # in case of exception, rollback the transaction
-    cur.execute('rollback')
-    return payload
+@app.route('/questions/<question_id>',methods=['GET'])
+def get_question_by_id(question_id):
+    return services.get_question_by_id(question_id)
 
 
 
