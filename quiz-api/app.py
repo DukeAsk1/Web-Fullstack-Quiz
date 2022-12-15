@@ -27,24 +27,37 @@ def login():
 
 @app.route('/questions',methods=['POST'])
 def postQuestions():
-   #Récupérer le token envoyé en paramètre
-    auth_token = request.headers.get('Authorization')
-    try :
-        decode_token(auth_token[7:])
-    except TypeError:
-        return {"message" : "Not authenticated"} ,401
-    except Exception as e:
-        return e.__dict__ ,401
-
+    services.check_token()
     #récupèrer un l'objet json envoyé dans le body de la requète
     question_json = request.get_json()
     return services.post_question(question_json)
 
-@app.route('/questions/<question_id>',methods=['GET'])
+@app.route('/questions/{question_id}', methods=['GET'])
 def get_question_by_id(question_id):
     return services.get_question_by_id(question_id)
 
+@app.route('/questions', methods=['GET'])
+def get_question_by_position():
+    position = request.args.get("position")
+    if position :
+        return services.get_question_by_position(position)
+    return {"message" : "Position non spécifiée"}, 404
 
+@app.route('/questions/all', methods=['DELETE'])
+def delete_all_questions():
+    services.check_token()
+    return services.delete_all_questions()
+
+@app.route('/questions/{question_id}', methods=['DELETE'])
+def delete_question_by_id(question_id):
+    services.check_token()
+    return services.delete_question_by_id(question_id)
+
+@app.route('/questions/{question_id}', methods=['PUT'])
+def update_question(question_id):
+    services.check_token()
+    list_question = request.get_json()
+    return services.update_question(list_question,question_id)
 
 if __name__ == "__main__":
     app.run()
