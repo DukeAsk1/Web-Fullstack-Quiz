@@ -74,6 +74,13 @@ def post_question(question):
     input_question = Question()
     input_question.from_json(question)
 
+    cur = init_db_cursor()
+
+    # try:
+    #     position_sql = cur.execute(f"select position FROM Question")
+    #     print(position_sql)
+    # except:
+    #     pass
     return insert_statement(
         f"insert into Question (position,title,text,image) values"
         f"({input_question.position!r},{input_question.title!r},"
@@ -107,7 +114,7 @@ def update_question(list_question,question_id):
             f"UPDATE Question SET position = {input_question.position!r},"
             f"title = {input_question.title!r},"
             f"text = {input_question.text!r},"
-            f"image = {input_question.image!r} WHERE id = {question_id!r}")
+            f"image = {input_question.image!r} WHERE id = {input_question.id!r}")
             
     return list_question,status
 
