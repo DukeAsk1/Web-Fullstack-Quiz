@@ -12,6 +12,9 @@ import HelloWorld from './components/HelloWorld.vue'
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/new-quiz-page">NewQuizPage</RouterLink>
+        <RouterLink to="/questions-manager">QuestionsManager</RouterLink>
+        <RouterLink to="/question-display">QuestionDisplay</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>

@@ -1,4 +1,4 @@
-from models import Question
+from models import Question,Answer
 import sqlite3
 from flask import Flask, request
 from jwt_utils import decode_token
@@ -27,43 +27,44 @@ def check_token():
     except Exception as e:
         return e.__dict__ ,401
 
-def execute_statement(statement) :
+def execute_statement(list_query) :
     cur = init_db_cursor()
     try:
-    # Use the cursor to execute an INSERT statement
-        cur.execute(statement)
+    # Use the cursor to execute an INSERT list_query
+        for query in list_query:
+            cur.execute(query)
         # send the request
         return cur, 200
     except sqlite3.Error as e:
     # If an error occurred, print the error message
         cur.execute('rollback')
-        return {"error" : {e.args[0]}}, 500
+        return {"error" : e}, 500
 
-def select_statement(statement):
-    response,status_code = execute_statement(statement)
+def select_statement(list_query):
+    response,status_code = execute_statement(list_query)
     if status_code == 200 :
         return response,status_code
     else :
         return response, status_code
 
-def insert_statement(statement) :
-    response,status_code = execute_statement(statement)
+def insert_statement(list_query) :
+    response,status_code = execute_statement(list_query)
     if status_code == 200 :
         response.execute("commit")
         return {"id":response.lastrowid},status_code
     else :
         return response, status_code
 
-def update_statement(statement):
-    response,status_code = execute_statement(statement)
+def update_statement(list_query):
+    response,status_code = execute_statement(list_query)
     if status_code == 200 :
         response.execute("commit")
         return {},204
     else :
         return response, status_code
 
-def delete_statement(statement):
-    response,status_code = execute_statement(statement)
+def delete_statement(list_query):
+    response,status_code = execute_statement(list_query)
     if status_code == 200 :
         response.execute("commit")
         return {},204
@@ -72,22 +73,55 @@ def delete_statement(statement):
 
 def post_question(question):
     input_question = Question()
+
+    input_answers = [Answer() for answer in question["possibleAnswers"]]
+    # answer =question["possibleAnswers"][0]
+
+    for i,answer_json in enumerate(question["possibleAnswers"]) :
+        input_answers[i].from_json(answer_json.copy())
+
+    question["possibleAnswers"] = input_answers
+    print(input_answers[1])
+
     input_question.from_json(question)
 
-    cur = init_db_cursor()
+
+
+    #cur = init_db_cursor()
 
     # try:
     #     position_sql = cur.execute(f"select position FROM Question")
     #     print(position_sql)
     # except:
     #     pass
-    return insert_statement(
+    # return insert_statement(
+    #     f"insert into Question (position,title,text,image) values"
+    #     f"({input_question.position!r},{input_question.title!r},"
+    #     f"{input_question.text!r},{input_question.image!r})")
+
+
+    insert_question,status_question = insert_statement([
         f"insert into Question (position,title,text,image) values"
         f"({input_question.position!r},{input_question.title!r},"
-        f"{input_question.text!r},{input_question.image!r})")
+        f"{input_question.text!r},{input_question.image!r})"])
 
-def select_question(statement):
-    response,status_code = select_statement(statement)
+    if not status_question == 200 :
+        return insert_question,status_question
+
+    insert_answer_string = ""
+    for answer in input_answers :
+       insert_answer_string += f"({insert_question['id']!r},{answer.text!r},{answer.isCorrect!r}),"
+
+    insert_answer,status_answer = insert_statement([
+        f"insert into Answer (question_id,text,isCorrect) values"
+        f"{insert_answer_string[:-1]}"])
+
+    if not status_answer == 200 :
+        return insert_answer,status_answer
+    return insert_question,200
+
+def select_question(list_query):
+    response,status_code = select_statement(list_query)
     if status_code == 200 :
         for id,position,title,text,image in response :
             question = Question()
@@ -98,10 +132,10 @@ def select_question(statement):
         return response, status_code
 
 def get_question_by_id(id):
-    return select_question(f"SELECT * FROM Question where id = {id}")
+    return select_question([f"SELECT * FROM Question where id = {id}"])
 
 def get_question_by_position(position):
-    return select_question(f"SELECT * FROM Question where position = {position}")
+    return select_question([f"SELECT * FROM Question where position = {position}"])
 
 def update_question(list_question,question_id):
     input_question = Question()
@@ -119,10 +153,11 @@ def update_question(list_question,question_id):
     return list_question,status
 
 def delete_all_questions():
-    return delete_statement("DELETE FROM Question")
+    return delete_statement(["DELETE FROM Question","DELETE FROM Answer"])
 
 def delete_question_by_id(id):
     list_question,status = get_question_by_id(id)
     if status == 200 :
-        return delete_statement(f"DELETE FROM Question where id = {id}")
+        return delete_statement([f"DELETE FROM Question where id = {id}","DELETE FROM Question where question_id= {id}"])
     return list_question,status
+

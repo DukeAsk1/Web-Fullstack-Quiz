@@ -63,7 +63,7 @@ def delete_all_questions():
         return e.__dict__ ,401
     return services.delete_all_questions()
 
-@app.route('/questions/{question_id}', methods=['DELETE'])
+@app.route('/questions/<question_id>', methods=['DELETE'])
 def delete_question_by_id(question_id):
     # Récupérer le token envoyé en paramètre
     auth_token = request.headers.get('Authorization')
