@@ -1,0 +1,21 @@
+CREATE TABLE "Question" (
+	"id"	INTEGER,
+	"position"	INTEGER UNIQUE,
+	"title"	TEXT,
+	"text"	TEXT,
+	"image"	TEXT,
+	PRIMARY KEY("id")
+);
+
+
+
+CREATE TABLE "Answer" (
+	"text"	TEXT,
+	"isCorrect"	INTEGER,
+	"question_id"	INTEGER NOT NULL,
+	"answer_id"	INTEGER NOT NULL,
+	PRIMARY KEY("answer_id"),
+	FOREIGN KEY("question_id") REFERENCES "Question"("id")
+);
+
+

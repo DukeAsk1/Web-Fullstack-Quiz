@@ -41,7 +41,7 @@ def post_question():
 
 @app.route('/questions/<question_id>', methods=['GET'])
 def get_question_by_id(question_id):
-    #question_id = request.args.get("id")
+    print('in id get',question_id)
     return services.get_question_by_id(question_id)
 
 @app.route('/questions', methods=['GET'])

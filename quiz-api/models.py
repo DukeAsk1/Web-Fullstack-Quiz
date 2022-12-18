@@ -19,9 +19,6 @@ class Answer() :
             setattr(self,k,v)
 
 
-
-
-
 # Exemple de création de classe en python
 class Question():
 

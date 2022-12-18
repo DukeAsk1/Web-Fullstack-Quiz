@@ -17,16 +17,6 @@ def init_db_cursor():
 
     return cur
 
-def check_token():
-    # Récupérer le token envoyé en paramètre
-    auth_token = request.headers.get('Authorization')
-    try :
-        decode_token(auth_token[7:])
-    except TypeError:
-        return {"message" : "Not authenticated"} ,401
-    except Exception as e:
-        return e.__dict__ ,401
-
 def execute_statement(list_query) :
     print(list_query)
     cur = init_db_cursor()
@@ -88,11 +78,26 @@ def post_question(question):
 
     input_question.from_json(question)
 
+    # Check if position is already filled : multiple query 
 
-    insert_question,status_question = insert_statement([
+    list_query = []
+
+    question_by_position = get_question_by_position(input_question.position)
+
+    if question_by_position[1] == 200 :
+        # increase position by 1 for position value >= to input question
+        list_query.append(
+            f"UPDATE Question SET position = position + 1 "
+            f"WHERE position >= {input_question.position!r}")
+
+
+    list_query.append(
         f"insert into Question (position,title,text,image) values"
         f"({input_question.position!r},{input_question.title!r},"
-        f"{input_question.text!r},{input_question.image!r})"])
+        f"{input_question.text!r},{input_question.image!r})"
+        )
+
+    insert_question,status_question = insert_statement(list_query)
 
     if not status_question == 200 :
         return insert_question,status_question
@@ -138,6 +143,8 @@ def get_question_by_id(id,answer_id=False):
     return select_question([f"SELECT Question.*, group_concat(Answer.answer_id||'/'||Answer.text||'/'||Answer.isCorrect,'-') as possibleAnswers "
                             f"FROM Question LEFT JOIN Answer on Question.id = Answer.question_id where Question.id = {id} GROUP BY Question.id"],
                             answer_id)
+# TO BE TESTED
+
 
 def get_question_by_position(position,answer_id=False):
     return select_question([f"SELECT Question.*, group_concat(Answer.answer_id||'/'||Answer.text||'/'||Answer.isCorrect,'-') as possibleAnswers "
@@ -153,9 +160,6 @@ def update_question(updated_question,question_id):
     # remove old answers data 
     # re insert new values
     input_question = Question()
-    # input_question.from_json(list_question)
-
-    #updated_question,status = get_question_by_id(question_id)
     input_answers = [Answer() for answer in updated_question["possibleAnswers"]]
 
     for i,answer_json in enumerate(updated_question["possibleAnswers"]) :
@@ -216,6 +220,13 @@ def delete_all_questions():
 def delete_question_by_id(id):
     list_question,status = get_question_by_id(id)
     if status == 200 :
-        return delete_statement([f"DELETE FROM Question where id = {id}",f"DELETE FROM Question where question_id = {id}"])
+        return delete_statement(
+            [
+                f"DELETE FROM Question where id = {id}",
+                f"DELETE FROM Answer where question_id = {id}",
+                f"UPDATE Question SET position = position - 1 "
+                f"WHERE position >= {list_question['position']!r}"
+            ]
+        )
     return list_question,status
 
