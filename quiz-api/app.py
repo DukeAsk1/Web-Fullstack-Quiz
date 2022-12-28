@@ -41,14 +41,11 @@ def post_question():
 
 @app.route('/questions/<question_id>', methods=['GET'])
 def get_question_by_id(question_id):
-    print('in id get',question_id)
     return services.get_question_by_id(question_id)
 
 @app.route('/questions', methods=['GET'])
 def get_question_by_position():
     position = request.args.get("position")
-    print(position)
-    print('in position')
     if position :
         return services.get_question_by_position(position)
     return {"message" : "Position non spécifiée"}, 404
@@ -79,8 +76,6 @@ def delete_question_by_id(question_id):
 
 @app.route('/questions/<question_id>', methods=['PUT'])
 def update_question(question_id):
-    question_id = question_id
-    print('in update')
     # Récupérer le token envoyé en paramètre
     auth_token = request.headers.get('Authorization')
     try :
@@ -90,8 +85,11 @@ def update_question(question_id):
     except Exception as e:
         return e.__dict__ ,401
     list_question = request.get_json()
-    print(list_question)
     return services.update_question(list_question,question_id)
+
+@app.route('/nb_question',methods=['GET'])
+def get_number_of_question():
+    return {"nb_question" : services.get_number_of_question()},200
 
 if __name__ == "__main__":
     app.run()

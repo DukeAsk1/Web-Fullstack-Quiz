@@ -1,7 +1,7 @@
 <template>
   <div class="question-display">
     <h1>Question Display</h1>
-    <img v-if="question.image" :src="test.jpg" /> <a @click="$emit('answer-selected', 2)">La réponse D</a>
+    <img v-if="question.image" :src="question.image" /> <a @click="$emit('answer-selected', 2)">La réponse D</a>
   </div>
 </template>
 
