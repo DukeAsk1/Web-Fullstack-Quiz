@@ -1,0 +1,63 @@
+// mounted() {
+  // const answer_list = sessionStorage.getItem('list_of_answers');
+  // const ongoing_score = sessionStorage.getItem('score');
+  // const position = sessionStorage.getItem('position');
+
+  // console.log(answer_list);
+
+  // this.list_of_answers = answer_list;
+  // this.score = ongoing_score;
+  // this.currentQuestionPosition = position;
+
+  //   try {
+  //     // Something that throws exception
+  //     const answer_list = sessionStorage.getItem('list_of_answers');
+  //     this.list_of_answers = answer_list;
+  //   }
+  //   catch (e) {
+  //     this.list_of_answers = [];
+  //   }
+  // try {
+  //   // Something that throws exception
+  //   const ongoing_score = sessionStorage.getItem('score');
+  //   this.score = ongoing_score;
+  //   console.log(this.score);
+  // }
+  // catch (e) {
+  //   this.score = 0;
+  // }
+  //   try {
+  //     // Something that throws exception
+  //     const position = sessionStorage.getItem('position');
+  //     this.currentQuestionPosition = position;
+  //   }
+  //   catch (e) {
+  //     this.currentQuestionPosition = 1;
+  //   }
+  // },
+
+// watch: {
+  //   // watch for changes to the selected property
+  //   selected: {
+  //     handler() {
+  //       console.log(this.list_of_answers)
+  //       try {
+  //         for (answer in this.currentQuestion.possibleAnswers) {
+  //           console.log(answer);
+  //         }
+  //       }
+  //       catch (e) { }
+  //       // console.log(this.currentQuestion.possibleAnswers);
+
+  //       this.calculateScore();
+  //     },
+  //     immediate: true,
+  //   },
+  // },
+  /*computed: {
+    totalNumberOfQuestion: function () {
+      console.log(Object.values(this.getNumberOfQuestion()))
+      return Object.values(this.getNumberOfQuestion())
+    }
+  }*/
+

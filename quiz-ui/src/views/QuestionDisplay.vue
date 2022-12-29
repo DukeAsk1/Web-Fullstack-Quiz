@@ -6,17 +6,21 @@
     <h1>{{ question.text }}</h1>
 
     <img v-if="question.image" :src="question.image" />
-    <!-- <div>
-      Answer Selected : {{ selected.text }}
-      Scores : {{ score }}
-    </div> -->
 
-    <!-- <div v-for="value in currentQuestion.possibleAnswers" :key="value">
-      <input type="radio" v-model="selected" :value="value" /> {{ value.text }}
-    </div> -->
-    <a v-for="(answer, index) in question.possibleAnswers" @click="$emit('answer-selected', index)">
+    <div class="d-flex-column">
+      <a v-for="value in question.possibleAnswers" @click="$emit('answer-selected', value)">
+        <!-- :key="value"> -->
+        <input type="radio" :value="value" name="radAnswer" />
+        {{ value.text }}
+      </a>
+      <!-- <div>
+        Answer Selected : {{ radAnswer }}
+        Scores : {{ score }}
+      </div> -->
+    </div>
+    <!-- <a v-for="(answer, index) in question.possibleAnswers" @click="$emit('answer-selected', index)">
       {{ answer.text }}
-    </a>
+    </a> -->
 
   </div>
 </template>
