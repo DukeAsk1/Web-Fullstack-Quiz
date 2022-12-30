@@ -18,9 +18,6 @@
         Scores : {{ score }}
       </div> -->
     </div>
-    <!-- <a v-for="(answer, index) in question.possibleAnswers" @click="$emit('answer-selected', index)">
-      {{ answer.text }}
-    </a> -->
 
   </div>
 </template>

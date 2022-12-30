@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from jwt_utils import build_token,decode_token,secret
 import services
+import jwt_utils
 
 
 app = Flask(__name__)
@@ -90,6 +91,8 @@ def update_question(question_id):
 @app.route('/nb_question',methods=['GET'])
 def get_number_of_question():
     return {"nb_question" : services.get_number_of_question()},200
+
+
 
 if __name__ == "__main__":
     app.run()

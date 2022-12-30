@@ -28,6 +28,11 @@ const router = createRouter({
       component: QuestionDisplay
     },
     {
+      path: '/result',
+      name: 'result',
+      component: ResultPage
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
