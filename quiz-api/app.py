@@ -73,6 +73,7 @@ def delete_question_by_id(question_id):
         return {"message" : "Not authenticated"} ,401
     except Exception as e:
         return e.__dict__ ,401
+    print(question_id)
     return services.delete_question_by_id(question_id)
 
 @app.route('/questions/<question_id>', methods=['PUT'])
