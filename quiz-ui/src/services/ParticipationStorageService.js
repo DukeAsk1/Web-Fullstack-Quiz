@@ -15,4 +15,10 @@ export default {
   getParticipationScore() {
     return window.localStorage.getItem("participationScore");
   },
+  saveToken(token) {
+    window.localStorage.setItem("token", token);
+  },
+  getToken() {
+    return window.localStorage.getItem("token");
+  },
 };

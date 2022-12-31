@@ -35,5 +35,14 @@ export default {
   },
   getNumberOfQuestion() {
     return this.call("get", 'nb_question');
+  },
+  login(password) {
+    return this.call("post", "login", { "password": password });
+  },
+  updateQuestion(question_id, question, token) {
+    return this.call("put", "questions/" + question_id, question, token);
+  },
+  postQuestion(question, token) {
+    return this.call("post", "questions", question, token);
   }
 };

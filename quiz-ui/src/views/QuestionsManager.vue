@@ -27,7 +27,7 @@ export default {
 
         }
       },
-      selected: '',
+      selected: Array(),
       currentQuestionPosition: 1,
       totalNumberOfQuestion: 0,
       score: 0,
@@ -89,6 +89,9 @@ export default {
       }
     },
     async next_question() {
+      console.log("TYPE DE SELECTED", typeof (this.selected))
+      console.log(this.selected)
+      this.selected.position = this.currentQuestionPosition
       this.list_of_answers.push(this.selected);
       console.log('list of answers', this.list_of_answers);
       if (this.currentQuestionPosition == this.totalNumberOfQuestion) {
@@ -129,6 +132,10 @@ export default {
     },
     async endQuiz() {
       console.log('list of all answers', this.list_of_answers);
+      const listString = JSON.stringify(this.list_of_answers);
+      console.log(listString);
+      window.localStorage.setItem("list_of_answers", listString);
+      this.$router.push('/result');
     },
   },
 

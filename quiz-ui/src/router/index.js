@@ -3,6 +3,8 @@ import HomePage from '../views/HomePage.vue'
 import QuizPage from '../views/NewQuizPage.vue'
 import QuestionDisplay from '../views/QuestionDisplay.vue'
 import QuestionsManager from '../views/QuestionsManager.vue'
+import ResultPage from '../views/ResultPage.vue'
+import AdminPage from '../views/AdminPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +33,11 @@ const router = createRouter({
       path: '/result',
       name: 'result',
       component: ResultPage
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminPage
     },
     {
       path: '/about',
