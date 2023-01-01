@@ -2,8 +2,17 @@
   <div class="about">
     <h1>This is the admin page</h1>
   </div>
+  <div v-if="token">
+    <QuestionList v-if="action === 'view'" :question_list="list_of_question" @question-edit="modifyQuestionHandler" />
 
-  <div>
+    <QuestionModifier v-else-if="action === 'modifierQuestion'" :question="question"
+      @update:question="updateQuestion" />
+    <QuestionModifier v-else-if="action === 'newQuestion'" :question="question_form" @update:question="postQuestion" />
+
+  </div>
+
+
+  <div v-else>
     <p>Enter Admin Password :</p>
     <input type="text" v-model="password" id="name" name="name" size="10">
     <button class="btn btn-success" type="button" @click="loginPlayer">Connexion</button>
@@ -11,17 +20,28 @@
 </template>
 
 <script>
+// Create Vue for modifying the question or add new one 
+// Cherche condition for the use of button creation and modification
 import participationStorageService from "@/services/ParticipationStorageService";
 import quizApiService from "@/services/QuizApiService";
+
+import QuestionList from './QuestionList.vue';
+import QuestionModifier from './QuestionModifier.vue';
+
 export default {
   name: "Admin",
   data() {
     return {
       password: '',
       token: null,
+      admin_mode: "view",
+      question: null,
+      list_of_question: Array(),
     };
   },
   components: {
+    QuestionList,
+    QuestionModifier,
 
   },
   async created() {
@@ -37,8 +57,40 @@ export default {
         this.token = login_result.data.token
       }
     },
-  }
+    async addQuestionHandler() {
+      this.action = 'newQuestion'
+    },
+    async updateQuestionList() {
+      this.list_of_question = Array()
+      let quiz_info_detail = quizApiService.getQuizInfo();
+      let quiz_result = await quiz_info_detail;
+      for (let i = 1; i <= quiz_result.data.size; i++) {
+        let question_info = quizApiService.getQuestion(i);
+        let question_result = await question_info;
+        this.question_list.push(question_result.data)
+      }
+    }
+  },
+  async modifyQuestionHandler(questionPosition) {
+    let question_info = quizApiService.getQuestion(questionPosition);
+    let question_result = await question_info;
+    this.action = 'modifyQuestion';
+    this.question = question_result.data;
+  },
+  async updateQuestion(new_question) {
+    await quizApiService.updateQuestion(this.question.id, new_question, this.token);
+    this.token = participationStorageService.getToken();
+    this.updateQuestionList()
+    this.admin_mode = 'view'
+  },
+  async postQuestion(new_question) {
+    await quizApiService.postQuestion(new_question, this.token);
+    this.token = participationStorageService.getToken();
+    this.updateQuestionList()
+    this.admin_mode = 'view'
+  },
 }
+
 </script>
 
 

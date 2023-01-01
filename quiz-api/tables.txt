@@ -18,4 +18,12 @@ CREATE TABLE "Answer" (
 	FOREIGN KEY("question_id") REFERENCES "Question"("id")
 );
 
+CREATE TABLE "Attempts" ( 
+	"id" INTEGER, 
+	"playerName" TEXT NOT NULL, 
+	"score" INTEGER NOT NULL, 
+	"date" TEXT NOT NULL,
+	PRIMARY KEY("id") 
+);
+
 

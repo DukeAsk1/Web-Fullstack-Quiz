@@ -206,6 +206,28 @@ def delete_question_by_id(id):
         return {"message":"Question non trouvée"},404
     return question,204
 
+def get_quiz_info():
+    db = init_db_cursor()
+    cur = db.cursor()
+    cur.execute("begin")
+    try : 
+        nb_question = cur.execute(f"SELECT COUNT(*) FROM Question")
+    except sqlite3.Error as e:
+        # handle the error
+        print(f'An error occurred: {e}')
+
+    try:
+        participation_info = cur.execute(f"SELECT playerName,score,date FROM Attempts ORDER BY score DESC")
+    except sqlite3.Error as e:
+        # handle the error
+        print(f'An error occurred: {e}')
+    participation_detail = []
+
+    for participation in participation_info :
+        participation_detail.append({"playerName":participation[0],"score":participation[1],"date":participation[2]})
+
+    return {"size":nb_question.fetchone()[0],"scores":participation_detail},200
+
 def get_number_of_question():
     db = init_db_cursor()
     cur = db.cursor()

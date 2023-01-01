@@ -8,7 +8,7 @@
     <input type="text" v-model="username" id="name" name="name" size="10">
     <button class="btn btn-success" @click="launchNewQuiz"> GO!</button>
   </p>
-  <p>{{ username }}</p>
+  <p>{{ playerName }}</p>
 </template>
 
 <style>
@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     buttonClickHandler() {
-      console.log('Compute username');
+      console.log('Compute playerName');
       this.username = this.data.username;
     },
     launchNewQuiz() {
