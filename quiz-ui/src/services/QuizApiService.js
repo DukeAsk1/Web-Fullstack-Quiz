@@ -44,5 +44,10 @@ export default {
   },
   postQuestion(question, token) {
     return this.call("post", "questions", question, token);
-  }
+  },
+  deleteQuestion(question_id) {
+    //console.log("token in API SERVICE", token)
+    console.log('ID API SERVICE DELETE', question_id)
+    return this.call("delete", "questions/" + question_id);
+  },
 };

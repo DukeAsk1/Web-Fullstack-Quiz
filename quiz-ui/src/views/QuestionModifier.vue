@@ -19,8 +19,8 @@
 
     <div class="col">
       <label>Image</label>
-      <input type="file" placeholder="Image" ref="imageInput" accept="image/*" v-on:change="question.image"
-        @change="convertToBase64">
+      <img :src="'data:image/jpeg;base64,' + question.image" ref="image" @change="convertToImage" />
+      <input type="file" placeholder="Image" accept="image/*" @change="convertToBase64">
     </div>
 
     <div class="col">
@@ -35,8 +35,8 @@
           <div class="col">
             <label>Correct</label>
             <select class="form-select" v-model="answer_1.isCorrect">
-              <option selected value=false>False</option>
-              <option value=true>True</option>
+              <option selected value=0>False</option>
+              <option value=1>True</option>
             </select>
           </div>
         </div>
@@ -51,8 +51,8 @@
           <div class="col">
             <label>Correct</label>
             <select class="form-select" v-model="answer_2.isCorrect">
-              <option selected value=false>False</option>
-              <option value=true>True</option>
+              <option selected value=0>False</option>
+              <option value=1>True</option>
             </select>
           </div>
         </div>
@@ -67,8 +67,8 @@
           <div class="col">
             <label>Correct</label>
             <select class="form-select" v-model="answer_3.isCorrect">
-              <option selected value=false>False</option>
-              <option value=true>True</option>
+              <option selected value=0>False</option>
+              <option value=1>True</option>
             </select>
           </div>
         </div>
@@ -83,15 +83,15 @@
           <div class="col">
             <label>Correct</label>
             <select class="form-select" v-model="answer_4.isCorrect">
-              <option selected value=false>False</option>
-              <option value=true>True</option>
+              <option selected value=0>False</option>
+              <option value=1>True</option>
             </select>
           </div>
         </div>
       </div>
     </div>
-    <button class="btn btn-success" @click="save">Save</button>
   </form>
+  <button class="btn btn-success" @click="save">Save</button>
 </template>
 
 <script>
@@ -122,7 +122,7 @@ export default {
         text: null,
         isCorrect: null
       },
-      // base64Image: '',
+      base64Image: '',
       updatedAnswersArray: Array(),
     }
   },
@@ -151,6 +151,8 @@ export default {
           // Note: arrow function used here, so that "this.base64Image" refers to the image data in Vue component
           // Read image as base64 and set to base64Image
           this.base64Image = e.target.result
+          this.question.image = this.base64Image.substring(23);
+          console.log('size of base string', this.base64Image.substring(23).length)
         }
         // Start the reader job - read file as a data url (base64 format)
         reader.readAsDataURL(input.files[0])
@@ -186,12 +188,12 @@ export default {
         position: this.question.position,
         title: this.question.title,
         text: this.question.text,
-        image: this.base64Image,
+        image: this.question.image,
         possibleAnswers: this.updatedAnswersArray
       })
-      console.log("POSSIBLE ANSWERSSSSS", this.updatedAnswersArray)
+      console.log('base 64', this.base64Image);
+      console.log("POSSIBLE ANSWERSSSSS", this.updatedAnswersArray);
     },
   }
 }
-
 </script>

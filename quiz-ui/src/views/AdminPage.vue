@@ -7,7 +7,8 @@
     <button @click="addQuestionHandler">
       Add A Question
     </button>
-    <QuestionList v-if="action === 'view'" :list_of_question="list_of_question" @modify="modifyQuestionHandler" />
+    <QuestionList v-if="action === 'view'" :list_of_question="list_of_question" @modify="modifyQuestionHandler"
+      @delete="deleteQuestionHandler" />
 
     <QuestionModifier v-else-if="action === 'modifierQuestion'" :question="question"
       @update:question="updateQuestion" />
@@ -98,13 +99,18 @@ export default {
       console.log('In modifier')
       this.question = question_result.data;
     },
+    async deleteQuestionHandler(question_id) {
+      console.log('token', this.token)
+      await quizApiService.deleteQuestion(question_id, this.token);
+      this.token = participationStorageService.getToken();
+      this.updateQuestionList();
+      this.action = 'view';
+    },
     async updateQuestion(new_question) {
       await quizApiService.updateQuestion(this.question.id, new_question, this.token);
       this.token = participationStorageService.getToken();
-      console.log(this.token)
-      console.log('Question updated')
-      // this.updateQuestionList();
-      // this.action = 'view';
+      this.updateQuestionList();
+      this.action = 'view';
 
     },
     async postQuestion(new_question) {

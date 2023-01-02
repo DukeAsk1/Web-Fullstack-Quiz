@@ -7,6 +7,9 @@
       <a @click="$emit('modify', question.position)">
         Modify
       </a>
+      <a @click="$emit('delete', question.id)">
+        Delete
+      </a>
     </li>
   </ul>
 </template>
@@ -23,7 +26,7 @@ export default {
     list_of_question: {
       type: Object
     },
-    emits: ["modify"]
+    emits: ["modify", "delete"]
   }
 };
 </script>

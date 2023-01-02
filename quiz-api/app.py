@@ -83,6 +83,8 @@ def delete_all_questions():
 def delete_question_by_id(question_id):
     # Récupérer le token envoyé en paramètre
     auth_token = request.headers.get('Authorization')
+    print("id tot be deleted",question_id)
+    print("ATUH",auth_token)
     try :
         decode_token(auth_token[7:])
     except TypeError:
