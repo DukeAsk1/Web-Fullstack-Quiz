@@ -3,7 +3,11 @@
     <h1>This is the admin page</h1>
   </div>
   <div v-if="token">
-    <QuestionList v-if="action === 'view'" :question_list="list_of_question" @question-edit="modifyQuestionHandler" />
+    <button @click="logOut">LOG OUT</button>
+    <button @click="addQuestionHandler">
+      Add A Question
+    </button>
+    <QuestionList v-if="action === 'view'" :list_of_question="list_of_question" @modify="modifyQuestionHandler" />
 
     <QuestionModifier v-else-if="action === 'modifierQuestion'" :question="question"
       @update:question="updateQuestion" />
@@ -34,9 +38,17 @@ export default {
     return {
       password: '',
       token: null,
-      admin_mode: "view",
+      action: "view",
       question: null,
       list_of_question: Array(),
+      question_form: {
+        position: null,
+        text: null,
+        title: null,
+        image: null,
+        possibleAnswers: null
+      }
+
     };
   },
   components: {
@@ -45,8 +57,10 @@ export default {
 
   },
   async created() {
+    console.log('in admin creation question mode')
     this.token = participationStorageService.getToken();
-    this.updateQuestionList()
+    this.updateQuestionList();
+    // console.log(this.list_of_question);
   },
   methods: {
     async loginPlayer() {
@@ -55,40 +69,52 @@ export default {
       if (login_result) {
         participationStorageService.saveToken(login_result.data.token)
         this.token = login_result.data.token
+        console.log(this.token)
       }
     },
-    async addQuestionHandler() {
-      this.action = 'newQuestion'
+    async logOut() {
+      this.token = null;
+      participationStorageService.deleteToken();
+    },
+    addQuestionHandler() {
+      this.action = 'newQuestion';
     },
     async updateQuestionList() {
-      this.list_of_question = Array()
+      // this.list_of_question = Array()
       let quiz_info_detail = quizApiService.getQuizInfo();
       let quiz_result = await quiz_info_detail;
       for (let i = 1; i <= quiz_result.data.size; i++) {
         let question_info = quizApiService.getQuestion(i);
         let question_result = await question_info;
-        this.question_list.push(question_result.data)
+
+        this.list_of_question.push(question_result.data)
       }
-    }
+      // console.log('all question in db', this.list_of_question)
+    },
+    async modifyQuestionHandler(questionPosition) {
+      let question_info = quizApiService.getQuestion(questionPosition);
+      let question_result = await question_info;
+      this.action = 'modifierQuestion';
+      console.log('In modifier')
+      this.question = question_result.data;
+    },
+    async updateQuestion(new_question) {
+      await quizApiService.updateQuestion(this.question.id, new_question, this.token);
+      this.token = participationStorageService.getToken();
+      console.log(this.token)
+      console.log('Question updated')
+      // this.updateQuestionList();
+      // this.action = 'view';
+
+    },
+    async postQuestion(new_question) {
+      await quizApiService.postQuestion(new_question, this.token);
+      this.token = participationStorageService.getToken();
+      this.updateQuestionList()
+      this.action = 'view'
+    },
   },
-  async modifyQuestionHandler(questionPosition) {
-    let question_info = quizApiService.getQuestion(questionPosition);
-    let question_result = await question_info;
-    this.action = 'modifyQuestion';
-    this.question = question_result.data;
-  },
-  async updateQuestion(new_question) {
-    await quizApiService.updateQuestion(this.question.id, new_question, this.token);
-    this.token = participationStorageService.getToken();
-    this.updateQuestionList()
-    this.admin_mode = 'view'
-  },
-  async postQuestion(new_question) {
-    await quizApiService.postQuestion(new_question, this.token);
-    this.token = participationStorageService.getToken();
-    this.updateQuestionList()
-    this.admin_mode = 'view'
-  },
+
 }
 
 </script>

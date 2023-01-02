@@ -76,11 +76,10 @@ def select_question(query,answer_id=False):
     response= db.execute(query)
     # if status_code == 200 :
     for id,position,title,text,image,answers in response :
-        answers_list = answers.split("-")
+        answers_list = answers.split("§")
         input_answers = [Answer() for answer in answers_list]
         for i,answer_tuple in enumerate(answers_list) :
             answer_tuple = answer_tuple.split("/")
-            print(answer_tuple)
             answers_dict = {"id":answer_tuple[0],"text":answer_tuple[1],"isCorrect":True if answer_tuple[2] == '1' else False}
             input_answers[i].from_json(answers_dict)
         question = Question()
@@ -91,14 +90,14 @@ def select_question(query,answer_id=False):
     #     return response, status_code
 
 def get_question_by_id(id,answer_id=False):
-    return select_question(f"SELECT Question.*, group_concat(Answer.id||'/'||Answer.text||'/'||Answer.isCorrect,'-') as possibleAnswers "
+    return select_question(f"SELECT Question.*, group_concat(Answer.id||'/'||Answer.text||'/'||Answer.isCorrect,'§') as possibleAnswers "
                             f"FROM Answer LEFT JOIN Question on Question.id = Answer.question_id where Question.id = {id} GROUP BY Question.id",
                             answer_id)
 # TO BE TESTED
 
 
 def get_question_by_position(position,answer_id=False):
-    return select_question(f"SELECT Question.*, group_concat(Answer.id||'/'||Answer.text||'/'||Answer.isCorrect,'-') as possibleAnswers "
+    return select_question(f"SELECT Question.*, group_concat(Answer.id||'/'||Answer.text||'/'||Answer.isCorrect,'§') as possibleAnswers "
                             f"FROM Answer LEFT JOIN Question on Question.id = Answer.question_id where position = {position} GROUP BY Question.id",
                             answer_id)
 
@@ -116,12 +115,12 @@ def update_question(updated_question,question_id):
     # re insert new values
     question_id = int(question_id)
     input_question = Question()
-    print("possible answers",updated_question['possibleAnswers'])
+    # print("possible answers",updated_question['possibleAnswers'])
     input_answers = [Answer() for answer in updated_question["possibleAnswers"]]
 
     for i,answer_json in enumerate(updated_question["possibleAnswers"]) :
         input_answers[i].from_json(answer_json.copy())
-    print("input answers",input_answers)
+    # print("input answers",input_answers)
     updated_question["possibleAnswers"] = input_answers
     input_question.from_json(updated_question)
     question_json,status = get_question_by_id(question_id,True)
@@ -216,17 +215,17 @@ def get_quiz_info():
         # handle the error
         print(f'An error occurred: {e}')
 
-    try:
-        participation_info = cur.execute(f"SELECT playerName,score,date FROM Attempts ORDER BY score DESC")
-    except sqlite3.Error as e:
-        # handle the error
-        print(f'An error occurred: {e}')
-    participation_detail = []
+    # try:
+    #     participation_info = cur.execute(f"SELECT playerName,score,date FROM Attempts ORDER BY score DESC")
+    # except sqlite3.Error as e:
+    #     # handle the error
+    #     print(f'An error occurred: {e}')
+    # participation_detail = []
 
-    for participation in participation_info :
-        participation_detail.append({"playerName":participation[0],"score":participation[1],"date":participation[2]})
+    # for participation in participation_info :
+    #     participation_detail.append({"playerName":participation[0],"score":participation[1],"date":participation[2]})
 
-    return {"size":nb_question.fetchone()[0],"scores":participation_detail},200
+    return {"size":nb_question.fetchone()[0],"scores":0},200
 
 def get_number_of_question():
     db = init_db_cursor()

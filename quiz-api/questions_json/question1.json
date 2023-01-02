@@ -1,0 +1,12 @@
+{
+"id": 1,
+"position": 1,
+"text": "What team won the NBA Championship in 2020?",
+"title": "NBA",
+"possibleAnswers": [
+{"text": "Los Angeles Lakers", "isCorrect": true},
+{"text": "Golden State Warriors", "isCorrect": false},
+{"text": "Boston Celtics", "isCorrect": false},
+{"text": "Houston Rockets", "isCorrect": false}
+]
+}

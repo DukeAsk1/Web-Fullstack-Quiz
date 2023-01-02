@@ -15,6 +15,7 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/new-quiz-page">NewQuizPage</RouterLink>
         <RouterLink to="/questions-manager">QuestionsManager</RouterLink>
         <RouterLink to="/question-display">QuestionDisplay</RouterLink>
+        <RouterLink to="/admin">Admin Access</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>

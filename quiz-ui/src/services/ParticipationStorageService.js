@@ -21,4 +21,7 @@ export default {
   getToken() {
     return window.localStorage.getItem("token");
   },
+  deleteToken() {
+    return window.localStorage.removeItem("token");
+  }
 };

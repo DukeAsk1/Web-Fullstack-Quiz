@@ -24,11 +24,11 @@ const router = createRouter({
       name: 'questions-manager',
       component: QuestionsManager
     },
-    {
-      path: '/question-display',
-      name: 'question-display',
-      component: QuestionDisplay
-    },
+    // {
+    //   path: '/question-display',
+    //   name: 'question-display',
+    //   component: QuestionDisplay
+    // },
     {
       path: '/result',
       name: 'result',

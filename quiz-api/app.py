@@ -3,10 +3,25 @@ from flask_cors import CORS
 from jwt_utils import build_token,decode_token,secret
 import services
 import jwt_utils
-
+# from questions_data import post_question_from_JSON
+import os
+import json
 
 app = Flask(__name__)
 CORS(app)
+
+# @app.before_first_request
+# def post_question_from_JSON(directory):
+#     print('in before app')
+#     for root, dirs, files in os.walk(directory):
+#         for file in files:
+#             if file.endswith('.json'):
+#                 file_path = os.path.join(root, file)
+#                 with open(file_path) as f:
+#                     data = json.load(f)
+#                     services.post_question(data)
+
+
 
 @app.route('/')
 def hello_world():
@@ -16,7 +31,7 @@ def hello_world():
 @app.route('/quiz-info', methods=['GET'])
 def get_quiz_info():
     return services.get_quiz_info()
-	# return {"size": 0, "scores": []}, 200
+	#return {"size": 0, "scores": []}, 200
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -88,6 +103,7 @@ def update_question(question_id):
     except Exception as e:
         return e.__dict__ ,401
     list_question = request.get_json()
+    print(list_question)
     return services.update_question(list_question,question_id)
 
 @app.route('/nb_question',methods=['GET'])

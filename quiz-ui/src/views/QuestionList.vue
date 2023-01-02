@@ -1,11 +1,12 @@
 <template>
   <ul>
     <li v-for="question in list_of_question">
+      {{ question.position }} /
       {{ question.text }}
       {{ question.possibleAnswers }}
-      <span @click="$emit('question-edit', question.position)">
+      <a @click="$emit('modify', question.position)">
         Modify
-      </span>
+      </a>
     </li>
   </ul>
 </template>
@@ -22,7 +23,7 @@ export default {
     list_of_question: {
       type: Object
     },
-    emits: ["question-edit"]
+    emits: ["modify"]
   }
 };
 </script>

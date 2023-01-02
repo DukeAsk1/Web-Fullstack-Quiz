@@ -24,6 +24,7 @@ export default {
 
   async created() {
     console.log("Composant Home page 'created'");
+
     let quizInfo = await quizApiService.getQuizInfo();
     this.registeredScores = quizInfo.data;
 
