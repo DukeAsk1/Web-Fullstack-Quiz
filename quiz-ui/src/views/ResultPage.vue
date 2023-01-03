@@ -2,16 +2,29 @@
   <div class="about">
     <h1>This is the result page</h1>
 
-    <ul v-for="item in list_of_answers" :key="item">
+    <div>
       <li>
         <a>
-          {{ item.position }}
+          Hi {{ list_of_result.playerName }}
         </a>
         <a>
-          {{ item.text }}
+          Your Score is : {{ list_of_result.score }}
+        </a>
+
+        <a>
+          Detail of your attempt :
+          <ul v-for="answer in list_of_result.answers_list" :key="answer">
+            <h2>Question : {{ answer[0] }}</h2>
+            <a>
+              Your answer : {{ answer[1] }}
+            </a>
+            <a>
+              The correct answer : {{ answer[3] }}
+            </a>
+          </ul>
         </a>
       </li>
-    </ul>
+    </div>
   </div>
 </template>
 
@@ -20,7 +33,7 @@
   .about {
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    ;
   }
 }
 </style>
@@ -60,7 +73,7 @@ export default {
         answer: "...",
         correct: '...',
       },
-      list_of_answers: Array(),
+      list_of_result: Array(),
     };
   },
   components: {
@@ -69,15 +82,10 @@ export default {
 
   async created() {
 
-    const list_of_answers = window.localStorage.getItem('list_of_answers');
-
     // parse the list as JSON
-    this.list_of_answers = JSON.parse(list_of_answers);
-    console.log(this.list_of_answers)
-    // this.list_of_answers = window.localStorage.getItem("list_of_answers");
-    // this.currentQuestion.questionTitle = currentQuestion.data.title;
-    // this.currentQuestion.questionText = currentQuestion.data.text;
-    // this.currentQuestion.possibleAnswers = currentQuestion.data.possibleAnswers;
+    this.list_of_result = JSON.parse(window.localStorage.getItem('result_quiz')).data;
+    console.log("Result page quiz", this.list_of_result);
+    console.log(this.list_of_result.playerName)
 
   },
 

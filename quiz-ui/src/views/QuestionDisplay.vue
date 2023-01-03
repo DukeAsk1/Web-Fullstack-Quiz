@@ -8,7 +8,7 @@
     <img v-if="question.image" :src="question.image" />
 
     <div class="d-flex-column">
-      <a v-for="value in question.possibleAnswers" @click="$emit('answer-selected', value)">
+      <a v-for="(value, index) in question.possibleAnswers" @click="$emit('answer-selected', index)">
         <!-- :key="value"> -->
         <input type="radio" :value="value" name="radAnswer" />
         {{ value.text }}

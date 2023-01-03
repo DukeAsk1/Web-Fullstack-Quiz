@@ -117,5 +117,22 @@ def post_participation():
     player_answers = request.get_json()
     return services.post_participation(player_answers)
 
+@app.route('/participations/all', methods=['DELETE'])
+def deleteAllParticipations():
+   #Récupérer le token envoyé en paramètre
+    auth_token = request.headers.get('Authorization')
+    try :
+        jwt_utils.decode_token(auth_token[7:])
+    except TypeError:
+        return {"message" : "Veuillez vous authentifier"} ,401
+    except Exception as e:
+        return e.__dict__ ,401
+
+    return services.delete_all_participations()
+
+@app.route('/rebuild-db', methods=['POST'])
+def rebuild_db():
+    return services.rebuild_db()
+
 if __name__ == "__main__":
     app.run()

@@ -46,11 +46,15 @@ export default {
     return this.call("post", "questions", question, token);
   },
   deleteQuestion(question_id, token) {
-    console.log("token in API SERVICE", token)
-    console.log('ID API SERVICE DELETE', question_id)
     return this.call("delete", "questions/" + question_id, null, token);
+  },
+  deleteAllQuestions(token) {
+    return this.call("delete", "questions/all", null, token);
   },
   postParticipation(player_answers) {
     return this.call("post", "participations", player_answers)
+  },
+  deleteAllParticipations(token) {
+    return this.call("delete", "participations/all", null, token);
   }
 };

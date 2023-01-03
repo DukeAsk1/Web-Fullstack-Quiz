@@ -17,6 +17,50 @@ def init_db_cursor():
     
     return db_connection
 
+def rebuild_db():
+    db = init_db_cursor()
+    cur = db.cursor()
+    cur.execute("begin")
+    try:
+        cur.execute(
+            """CREATE TABLE "Question" (
+                "id"	INTEGER NOT NULL,
+                "position"	INTEGER NOT NULL,
+                "title"	TEXT NOT NULL,
+                "text"	TEXT NOT NULL,
+                "image"	TEXT,
+                PRIMARY KEY("id")
+            );"""
+        )
+        cur.execute(
+            """CREATE TABLE "Answer" (
+                "text"	TEXT NOT NULL,
+                "isCorrect"	INTEGER NOT NULL,
+                "question_id"	INTEGER NOT NULL,
+                "id"	INTEGER NOT NULL,
+                PRIMARY KEY("id"),
+                FOREIGN KEY("question_id") REFERENCES "Question"("id")
+            );"""
+
+        )
+        cur.execute(
+            """CREATE TABLE "Attempts" ( 
+                "id" INTEGER NOT NULL, 
+                "playerName" TEXT NOT NULL, 
+                "score" INTEGER NOT NULL, 
+                "date" TEXT NOT NULL,
+                PRIMARY KEY("id") 
+            );"""
+
+        )
+    except sqlite3.Error as e:
+        # handle the error
+        print(f'An error occurred: {e}')
+    cur.execute("commit")
+    cur.close()
+    db.close()
+    return "DB Built",200
+
 
 def post_question(question):
     db = init_db_cursor()
@@ -244,54 +288,63 @@ def get_quiz_info():
 
     ##
 
-    # try:
-    #     participation_info = cur.execute(f"SELECT playerName,score,date FROM Attempts ORDER BY score DESC")
-    # except sqlite3.Error as e:
-    #     # handle the error
-    #     print(f'An error occurred: {e}')
-    # participation_detail = []
+    try:
+        participation_info = cur.execute(f"SELECT playerName,score,date FROM Attempts ORDER BY score DESC")
+    except sqlite3.Error as e:
+        # handle the error
+        print(f'An error occurred: {e}')
+    participations_details = []
 
-    # for participation in participation_info :
-    #     participation_detail.append({"playerName":participation[0],"score":participation[1],"date":participation[2]})
+    for participation in participation_info :
+        participations_details.append({"playerName":participation[0],"score":participation[1],"date":participation[2]})
     cur.close()
     db.close()
-    return {"size":total_question,"scores":0},200
+    return {"size":total_question,"scores":participations_details},200
 
 def post_participation(player_answers):
     quiz_info =get_quiz_info()
     if quiz_info[1] != 200 :
-        return {"error":"Problème de récupération des informations du quiz"},500
-    db = init_db_cursor()
-    cur = db.cursor()
-    cur.execute("begin")   
+        return {"error":"Problème de récupération des informations du quiz"},500  
+    print(player_answers)
+    total_question = quiz_info[0]["size"]
 
-    # nombre_questions = quiz_info[0]["size"]
-    answers_list = json.loads(player_answers['player_answers'])
     playerName = player_answers['playerName']
 
-    # if len(player_answers['player_answers']) < nombre_questions :
-    #     return {"error":"Le nombre des réponses est inférieur au nombre de questions"},400
-    # elif len(player_answers['player_answers']) > nombre_questions :
-    #     return {"error":"Le nombre des réponses est supérieur au nombre de questions"},400
+    if len(player_answers['answers']) < total_question :
+        return {"ERROR":"Answers missing from start to finish"},400
 
+    if len(player_answers['answers']) > total_question :
+        return {"ERROR":"Too many answers"},400
     score = 0
-    for i in range(0,len(answers_list)):
-        if answers_list[i]["isCorrect"]:
-            score+=1
-    # f"INSERT into Question (position,title,text,image) values"
-    #     f"({input_question.position!r},{input_question.title!r},"
-    #     f"{input_question.text!r},{input_question.image!r})"
+
+    answers_list = []
+
+    for index,answer_chosen in enumerate(player_answers["answers"]) :
+        question,status = get_question_by_position(index+1)
+        if status!= 200 :
+            return {"ERROR":"Search Question Error"},500
+        possibleAnswers = question["possibleAnswers"]
+
+        for index_sql,answer_choice in enumerate(possibleAnswers) :
+            if answer_choice['isCorrect'] == True :
+                correct_text = answer_choice['text']
+                isCorrect = False
+                if index_sql == int(answer_chosen)-1 :
+                    score+=1
+                    isCorrect = True
+                answers_list.append((question['text'],possibleAnswers[answer_chosen-1]['text'],isCorrect,correct_text))
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(playerName)
     print(score)
     print(now)
-    attempt_query = f"({playerName!r},{score!r},{now!r}),"
+    attempt_query = f"({str(playerName)!r},{int(score)!r},{str(now)!r}),"
     print(attempt_query[:-1])
+
+    db = init_db_cursor()
+    cur = db.cursor()
+    cur.execute("begin") 
     try:
-        cur.execute(
-            f"INSERT INTO Attempts (playerName,score,date) values",
-            f"{attempt_query[:-1]}"
-            )
+        cur.execute(f"INSERT INTO Attempts (playerName,score,date) values {attempt_query[:-1]}")
     except sqlite3.Error as e:
         # handle the error
         print(f'An error occurred: {e}')
@@ -299,9 +352,21 @@ def post_participation(player_answers):
     cur.close()
     db.close()
 
-    return {"player_answers":player_answers,"score":score},200
+    return {"answers_list":answers_list,"score":score, "playerName":playerName},200
 
-
+def delete_all_participations():
+    db = init_db_cursor()
+    cur = db.cursor()
+    cur.execute("begin")
+    try:
+        cur.execute(f"DELETE FROM Participation")
+    except sqlite3.Error as e:
+        # handle the error
+        print(f'An error occurred: {e}')
+    cur.execute('commit')
+    cur.close()
+    db.close()
+    return {},204
 
 def get_number_of_question():
     db = init_db_cursor()

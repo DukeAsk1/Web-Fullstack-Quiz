@@ -3,10 +3,25 @@
     <h1>This is the admin page</h1>
   </div>
   <div v-if="token">
-    <button @click="logOut">LOG OUT</button>
-    <button @click="addQuestionHandler">
-      Add A Question
-    </button>
+    <div>
+      <button @click="logOut">LOG OUT</button>
+    </div>
+    <div>
+      <button @click="addQuestionHandler">
+        Add A Question
+      </button>
+    </div>
+
+    <div>
+      <button @click="deleteAllQuestions">
+        DELETE ALL QUESTIONS
+      </button>
+      <button @click="deleteAllParticipations">
+        DELETE ALL PARTICIPATIONS
+      </button>
+    </div>
+
+
     <QuestionList v-if="action === 'view'" :list_of_question="list_of_question" @modify="modifyQuestionHandler"
       @delete="deleteQuestionHandler" />
 
@@ -117,6 +132,17 @@ export default {
       await quizApiService.postQuestion(new_question, this.token);
       this.token = participationStorageService.getToken();
       this.updateQuestionList()
+      this.action = 'view'
+    },
+    async deleteAllQuestions() {
+      await quizApiService.deleteAllQuestions(this.token)
+      this.token = participationStorageService.getToken()
+      this.updateQuestionList()
+      this.action = 'view'
+    },
+    async deleteAllParticipations() {
+      await quizApiService.deleteAllParticipations(this.token)
+      this.token = participationStorageService.getToken()
       this.action = 'view'
     },
   },

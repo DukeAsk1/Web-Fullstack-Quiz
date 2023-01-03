@@ -28,16 +28,14 @@ export default {
 
         }
       },
-      selected: Array(),
+      selected: 0,
       currentQuestionPosition: 1,
       totalNumberOfQuestion: 0,
-      score: 0,
-      answer_current_question: {
-        index: 0,
-        answer: "...",
-        correct: '...',
-      },
       list_of_answers: Array(),
+      // result_quiz: {
+      //   answers_selected: null,
+      //   score: null
+      // }
     };
   },
   components: {
@@ -65,35 +63,13 @@ export default {
       let question_data = await current_question;
       return question_data.data
     },
-    async getCorrectAnswer() {
-      for (let i = 0; i <= this.currentQuestion.possibleAnswers.length - 1; i++) {
-        if (this.currentQuestion.possibleAnswers[i].isCorrect === true) {
-          this.answer_current_question.correct = this.currentQuestion.possibleAnswers[i].text;
-        }
-      }
-    },
     getNumberOfQuestion() {
       return quizApiService.getNumberOfQuestion()
-    },
-    async calculateScore() {
-      // for (const element of this.currentQuestion) {
-      //   console.log(element);
-      //   if (element.isCorrect === true) {
-      //     console.log(element)
-      //     this.answer_current_question.correct = this.element.text;
-      //   }
-      // }
-      if (this.selected.isCorrect === true) {
-        this.score++;
-      }
-      else {
-        this.score;
-      }
     },
     async next_question() {
       console.log("TYPE DE SELECTED", typeof (this.selected))
       console.log(this.selected)
-      this.selected.position = this.currentQuestionPosition
+      // this.selected.position = this.currentQuestionPosition
       this.list_of_answers.push(this.selected);
       console.log('list of answers', this.list_of_answers);
       if (this.currentQuestionPosition == this.totalNumberOfQuestion) {
@@ -129,21 +105,24 @@ export default {
       // this.currentQuestion.possibleAnswers = currentQuestion.data.possibleAnswers;
     },
     async answerClickedHandler(value) {
-      this.selected = value;
+      this.selected = value + 1;
       console.log('selected answer', this.selected);
     },
     async endQuiz() {
       console.log('list of all answers', this.list_of_answers);
-      const listString = JSON.stringify(this.list_of_answers);
-      console.log(listString);
+      // const list_index = JSON.stringify(this.list_of_answers);
+      // console.log(list_index);
       const playerName = participationStorageService.getPlayerName();
-      await quizApiService.postParticipation(
+      let result_quiz = await quizApiService.postParticipation(
         {
-          'player_answers': listString,
+          'answers': this.list_of_answers,
           'playerName': playerName
         });
-      //window.localStorage.setItem("list_of_answers", listString);
-      // this.$router.push('/result');
+      console.log('JSON RESULT', result_quiz);
+      // const json_result = JSON.stringify(this.result_quiz);
+      // console.log('STRINGIFY', json_result)
+      window.localStorage.setItem("result_quiz", JSON.stringify(result_quiz));
+      this.$router.push('/result');
     },
   },
 
