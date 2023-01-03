@@ -2,6 +2,8 @@ from models import Question,Answer
 import sqlite3
 from flask import Flask, request
 from jwt_utils import decode_token
+from datetime import datetime
+import json
 
 
 def init_db_cursor():
@@ -84,10 +86,12 @@ def select_question(query,answer_id=False):
             input_answers[i].from_json(answers_dict)
         question = Question()
         question.init(id,position,title,text,image,input_answers)
+        db.close()
         return question.to_json(answer_id), 200
     return {"message":"Question non trouvée"},404
     # else :
     #     return response, status_code
+    
 
 def get_question_by_id(id,answer_id=False):
     return select_question(f"SELECT Question.*, group_concat(Answer.id||'/'||Answer.text||'/'||Answer.isCorrect,'§') as possibleAnswers "
@@ -191,6 +195,7 @@ def delete_question_by_id(id):
     cur = db.cursor()
     cur.execute("begin")
     question,status = get_question_by_id(id)
+    print(question)
     if status == 200 :
         cur.execute(f"DELETE FROM Question where id = {id}")
         cur.execute(f"DELETE FROM Answer where question_id = {id}")
@@ -198,11 +203,13 @@ def delete_question_by_id(id):
             f"UPDATE Question SET position = position - 1 "
                 f"WHERE position >= {question['position']!r}"
         )
-        cur.execute('commit')
-        cur.close()
-        db.close()
+        
     else:
         return {"message":"Question non trouvée"},404
+    cur.execute('commit')
+    cur.close()
+    db.close()
+    print('delete done')
     return question,204
 
 def get_quiz_info():
@@ -211,6 +218,7 @@ def get_quiz_info():
     cur.execute("begin")
     try : 
         nb_question = cur.execute(f"SELECT COUNT(*) FROM Question")
+        total_question = nb_question.fetchone()[0]
     except sqlite3.Error as e:
         # handle the error
         print(f'An error occurred: {e}')
@@ -245,8 +253,55 @@ def get_quiz_info():
 
     # for participation in participation_info :
     #     participation_detail.append({"playerName":participation[0],"score":participation[1],"date":participation[2]})
+    cur.close()
+    db.close()
+    return {"size":total_question,"scores":0},200
 
-    return {"size":nb_question.fetchone()[0],"scores":0},200
+def post_participation(player_answers):
+    quiz_info =get_quiz_info()
+    if quiz_info[1] != 200 :
+        return {"error":"Problème de récupération des informations du quiz"},500
+    db = init_db_cursor()
+    cur = db.cursor()
+    cur.execute("begin")   
+
+    # nombre_questions = quiz_info[0]["size"]
+    answers_list = json.loads(player_answers['player_answers'])
+    playerName = player_answers['playerName']
+
+    # if len(player_answers['player_answers']) < nombre_questions :
+    #     return {"error":"Le nombre des réponses est inférieur au nombre de questions"},400
+    # elif len(player_answers['player_answers']) > nombre_questions :
+    #     return {"error":"Le nombre des réponses est supérieur au nombre de questions"},400
+
+    score = 0
+    for i in range(0,len(answers_list)):
+        if answers_list[i]["isCorrect"]:
+            score+=1
+    # f"INSERT into Question (position,title,text,image) values"
+    #     f"({input_question.position!r},{input_question.title!r},"
+    #     f"{input_question.text!r},{input_question.image!r})"
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(playerName)
+    print(score)
+    print(now)
+    attempt_query = f"({playerName!r},{score!r},{now!r}),"
+    print(attempt_query[:-1])
+    try:
+        cur.execute(
+            f"INSERT INTO Attempts (playerName,score,date) values",
+            f"{attempt_query[:-1]}"
+            )
+    except sqlite3.Error as e:
+        # handle the error
+        print(f'An error occurred: {e}')
+    cur.execute('commit')
+    cur.close()
+    db.close()
+
+    return {"player_answers":player_answers,"score":score},200
+
+
 
 def get_number_of_question():
     db = init_db_cursor()

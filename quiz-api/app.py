@@ -112,7 +112,10 @@ def update_question(question_id):
 def get_number_of_question():
     return {"nb_question" : services.get_number_of_question()},200
 
-
+@app.route('/participations',methods=['POST'])
+def post_participation():
+    player_answers = request.get_json()
+    return services.post_participation(player_answers)
 
 if __name__ == "__main__":
     app.run()

@@ -15,6 +15,7 @@
 <script>
 import QuestionDisplay from './QuestionDisplay.vue';
 import quizApiService from "@/services/QuizApiService";
+import participationStorageService from "@/services/ParticipationStorageService";
 // console.log(selected);
 export default {
   name: "Questions Manager",
@@ -55,6 +56,7 @@ export default {
     // console.log(this.selected.isCorrect);
     //this.score = this.calculateScore(value);
     //await this.getCorrectAnswer();
+    this.token = participationStorageService.getToken();
   },
 
   methods: {
@@ -134,8 +136,14 @@ export default {
       console.log('list of all answers', this.list_of_answers);
       const listString = JSON.stringify(this.list_of_answers);
       console.log(listString);
-      window.localStorage.setItem("list_of_answers", listString);
-      this.$router.push('/result');
+      const playerName = participationStorageService.getPlayerName();
+      await quizApiService.postParticipation(
+        {
+          'player_answers': listString,
+          'playerName': playerName
+        });
+      //window.localStorage.setItem("list_of_answers", listString);
+      // this.$router.push('/result');
     },
   },
 
