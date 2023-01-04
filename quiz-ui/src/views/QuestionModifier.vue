@@ -2,6 +2,10 @@
   <ul>
     Page for question Modifier
   </ul>
+  <div v-if="action === 'newQuestion'">
+    <label for="name-input">IMPORT QUESTION FROM JSON FILE:</label>
+    <input type="file" accept=".json" v-on:change="import_json">
+  </div>
   <form>
     <div class="col">
       <label>Position</label>
@@ -101,6 +105,7 @@ export default {
     question: {
       type: Object
     },
+    action: "",
     emits: ["update:question"]
   },
   data() {
@@ -194,6 +199,63 @@ export default {
       console.log('base 64', this.base64Image);
       console.log("POSSIBLE ANSWERSSSSS", this.updatedAnswersArray);
     },
+    import_json(event) {
+
+      const file = event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const json = JSON.parse(e.target.result);
+        // Do something with the JSON data here
+        this.question.position = json.position;
+        this.question.image = json.image;
+        this.question.text = json.text;
+        this.question.title = json.title;
+        this.question.possibleAnswers = json.possibleAnswers;
+
+        // console.log(this.question.possibleAnswers)
+
+        for (let i = 0; i < this.question.possibleAnswers.length; i++) {
+          console.log("index i in answers", this.question.possibleAnswers[i]);
+          if (this.question.possibleAnswers[i].isCorrect === true) {
+            this.question.possibleAnswers[i].isCorrect = 1;
+          }
+          else if (this.question.possibleAnswers[i].isCorrect === false) {
+            this.question.possibleAnswers[i].isCorrect = 0;
+          }
+        }
+        const [answer_1, answer_2, answer_3, answer_4] = this.question.possibleAnswers;
+        this.answer_1 = answer_1;
+        this.answer_2 = answer_2;
+        this.answer_3 = answer_3;
+        this.answer_4 = answer_4;
+        // this.updatedAnswersArray.push(answer_1);
+        // this.updatedAnswersArray.push(answer_2);
+        // this.updatedAnswersArray.push(answer_3);
+        // this.updatedAnswersArray.push(answer_4);
+
+
+        console.log("Answer Array JSON upload", this.updatedAnswersArray);
+        // {
+        // "id": 1,
+        // "position": 1,
+        // "text": "What team won the NBA Championship in 2020?",
+        // "title": "NBA",
+        // "possibleAnswers": [
+        // {"text": "Los Angeles Lakers", "isCorrect": true},
+        // {"text": "Golden State Warriors", "isCorrect": false},
+        // {"text": "Boston Celtics", "isCorrect": false},
+        // {"text": "Houston Rockets", "isCorrect": false}
+        // ]
+        // }
+      };
+      reader.readAsText(file);
+
+    }
   }
 }
 </script>

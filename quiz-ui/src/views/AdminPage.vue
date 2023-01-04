@@ -27,7 +27,8 @@
 
     <QuestionModifier v-else-if="action === 'modifierQuestion'" :question="question"
       @update:question="updateQuestion" />
-    <QuestionModifier v-else-if="action === 'newQuestion'" :question="question_form" @update:question="postQuestion" />
+    <QuestionModifier v-else-if="action === 'newQuestion'" :question="question_form" :action="action"
+      @update:question="postQuestion" @post:json="postQuestion" />
 
   </div>
 
@@ -129,6 +130,7 @@ export default {
 
     },
     async postQuestion(new_question) {
+      console.log("QUESTION AFTER SAVE", new_question)
       await quizApiService.postQuestion(new_question, this.token);
       this.token = participationStorageService.getToken();
       this.updateQuestionList()
@@ -145,6 +147,7 @@ export default {
       this.token = participationStorageService.getToken()
       this.action = 'view'
     },
+
   },
 
 }
