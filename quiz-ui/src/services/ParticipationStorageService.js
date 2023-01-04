@@ -9,6 +9,9 @@ export default {
   getPlayerName() {
     return window.localStorage.getItem("playerName");
   },
+  removePlayerName() {
+    return window.localStorage.removeItem("playerName");
+  },
   saveParticipationScore(participationScore) {
     window.localStorage.setItem("participationScore", participationScore);
   },

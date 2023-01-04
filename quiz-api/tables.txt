@@ -19,7 +19,7 @@ CREATE TABLE "Answer" (
 );
 
 CREATE TABLE "Attempts" ( 
-	"id" INTEGER, 
+	"id" INTEGER NOT NULL, 
 	"playerName" TEXT NOT NULL, 
 	"score" INTEGER NOT NULL, 
 	"date" TEXT NOT NULL,

@@ -12,7 +12,8 @@
         </a>
 
         <a>
-          Detail of your attempt :
+          <label for='attempt_answers'>Detail of your attempt :</label>
+          <!-- <select id="attempt_answers" size="100"> -->
           <ul v-for="answer in list_of_result.answers_list" :key="answer">
             <h2>Question : {{ answer[0] }}</h2>
             <a>
@@ -22,8 +23,28 @@
               The correct answer : {{ answer[3] }}
             </a>
           </ul>
+          <!-- </select> -->
         </a>
       </li>
+    </div>
+    <div>
+      The leaderboard for the quiz:
+      <table>
+        <tr v-for="row in this.registeredScores.scores" :class="highlightClass(row)">
+          <td>{{ row.playerName }}</td>
+          <td>{{ row.score }}</td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <button v-on:click="new_attempt">
+        TRY AGAIN
+      </button>
+      <button v-on:click="home_page">
+        HOME PAGE
+      </button>
+
+
     </div>
   </div>
 </template>
@@ -35,6 +56,10 @@
     display: flex;
     ;
   }
+}
+
+.highlight {
+  background-color: yellow;
 }
 </style>
 
@@ -50,23 +75,15 @@ et une image en fonction du résultat, flèche verte si égale, flèche rouge si
 
 */
 
-
-
-
-
-
-
 import QuestionDisplay from './QuestionDisplay.vue';
 import quizApiService from "@/services/QuizApiService";
+import participationStorageService from "@/services/ParticipationStorageService";
 // console.log(selected);
 export default {
   name: "Questions Manager",
   data() {
     return {
-      leaderboard: {
-        username: "...",
-        score: 0
-      },
+      registeredScores: [],
       score: 0,
       answer_current_question: {
         index: 0,
@@ -76,6 +93,14 @@ export default {
       list_of_result: Array(),
     };
   },
+  computed: {
+    highlightClass(value) {
+      if (value.date === this.list_of_result.date_attempt && value.playerName === this.list_of_result.playerName && value.score === this.list_of_result.score) {
+        return value === value ? 'highlight' : '';
+      }
+    }
+  },
+
   components: {
     QuestionDisplay
   },
@@ -84,10 +109,21 @@ export default {
 
     // parse the list as JSON
     this.list_of_result = JSON.parse(window.localStorage.getItem('result_quiz')).data;
-    console.log("Result page quiz", this.list_of_result);
-    console.log(this.list_of_result.playerName)
-
+    // console.log("Result page quiz", this.list_of_result);
+    // console.log(this.list_of_result.playerName)
+    let quizInfo = await quizApiService.getQuizInfo();
+    this.registeredScores = quizInfo.data;
+    console.log(this.registeredScores)
   },
+  methods: {
+    new_attempt() {
+      this.$router.push('/questions-manager');
+    },
+    home_page() {
+      participationStorageService.removePlayerName();
+      this.$router.push('/');
+    }
+  }
 
 };
 </script>

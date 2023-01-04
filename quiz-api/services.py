@@ -289,7 +289,7 @@ def get_quiz_info():
     ##
 
     try:
-        participation_info = cur.execute(f"SELECT playerName,score,date FROM Attempts ORDER BY score DESC")
+        participation_info = cur.execute(f"SELECT playerName,score,date FROM Attempts ORDER BY score DESC LIMIT 10")
     except sqlite3.Error as e:
         # handle the error
         print(f'An error occurred: {e}')
@@ -352,7 +352,7 @@ def post_participation(player_answers):
     cur.close()
     db.close()
 
-    return {"answers_list":answers_list,"score":score, "playerName":playerName},200
+    return {"answers_list":answers_list,"score":score, "playerName":playerName,"date_attempt":now},200
 
 def delete_all_participations():
     db = init_db_cursor()
