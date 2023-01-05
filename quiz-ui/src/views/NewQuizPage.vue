@@ -12,27 +12,21 @@
       <div class="col-4 offset-4">
         <!-- todo inputfloat -->
         <div class="form-floating mb-3">
-          <input
-            type="text"
-            class="form-control"
-            v-model="username"
-            id="name"
-            name="name"
-            placeholder="votrepseudo"
-          />
+          <input type="text" class="form-control" v-model="username" id="name" name="name" placeholder="votrepseudo" />
           <label class="text-dark" for="name">Pseudonyme</label>
         </div>
       </div>
 
       <div class="col-4 offset-4 text-center mt-3">
-        <button class="btn btn-success" @click="launchNewQuiz">GO!</button>
+        <Transition name="fade">
+          <RouterLink to="/questions-manager">
+            <button class="btn btn-success" @click="launchNewQuiz">GO!</button>
+          </RouterLink>
+        </Transition>
       </div>
 
-      <div
-        class="col-6 offset-3 text-center alert alert-danger alert-dismissible fade show"
-        role="alert"
-        v-if="!username && wrongSubmit"
-      >
+      <div class="col-6 offset-3 text-center alert alert-danger alert-dismissible fade show" role="alert"
+        v-if="!username && wrongSubmit">
         <strong>Erreur !</strong> Veuillez entrer un pseudonyme dans le champ
         ci-dessus
       </div>
@@ -64,8 +58,20 @@ export default {
       participationStorageService.savePlayerName(this.username.toString());
       const playerName = participationStorageService.getPlayerName();
       console.log("Launch new quiz with " + playerName);
-      this.$router.push("/questions-manager");
+      // this.$router.push("/questions-manager");
     },
   },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

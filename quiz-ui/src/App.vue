@@ -7,7 +7,14 @@ import HeaderVue from "./views/Header.vue";
 <template>
   <div class="container-fluid p-0">
     <HeaderVue />
-    <RouterView />
+    <!-- <Transition name="fade">
+      <RouterView />
+    </Transition> -->
+    <router-view v-slot="{ Component }">
+      <transition name="fade">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -38,6 +45,8 @@ nav a {
 nav a:first-of-type {
   border: 0;
 }
+
+
 
 @media (min-width: 1024px) {
   header {

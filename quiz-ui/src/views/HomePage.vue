@@ -6,15 +6,15 @@
       </div>
 
       <!-- Leaderboard -->
-      <RankingsVue />
+      <RankingsVue v-if="action === 'start'" />
       <!--  -->
 
       <div class="col text-center">
         <button class="btn btn-success">
           <!-- hover effect to fix -->
-          <router-link class="text-light" to="/new-quiz-page"
-            >Démarrer le quiz !</router-link
-          >
+          <transition name="fade">
+            <router-link class="text-light" to="/new-quiz-page">Démarrer le quiz !</router-link>
+          </transition>
         </button>
       </div>
     </div>
@@ -46,3 +46,15 @@ export default {
   },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

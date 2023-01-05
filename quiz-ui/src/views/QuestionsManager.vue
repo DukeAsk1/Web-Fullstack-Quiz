@@ -12,13 +12,21 @@
 
     <div class="row">
       <div class="text-center">
-        <button v-if="currentQuestionPosition != totalNumberOfQuestion" @click="next_question" class="btn btn-success">
-          Next
-        </button>
+        <Transition name="slide">
+          <button v-if="currentQuestionPosition != totalNumberOfQuestion" @click="next_question"
+            class="btn btn-success">
+            Next
+          </button>
+        </Transition>
 
-        <button v-if="currentQuestionPosition == totalNumberOfQuestion" @click="next_question" class="btn btn-success">
-          Submit and see results
-        </button>
+        <Transition name="fade">
+          <!-- <RouterLink to="/result"> -->
+          <button v-if="currentQuestionPosition == totalNumberOfQuestion" @click="next_question"
+            class="btn btn-success">
+            Submit and see results
+          </button>
+          <!-- </RouterLink> -->
+        </Transition>
       </div>
     </div>
   </div>
@@ -113,8 +121,33 @@ export default {
       // const json_result = JSON.stringify(this.result_quiz);
       // console.log('STRINGIFY', json_result)
       window.localStorage.setItem("result_quiz", JSON.stringify(result_quiz));
+      this.result_quiz = {};
       this.$router.push("/result");
     },
   },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: 0.3s ease-out;
+}
+</style>

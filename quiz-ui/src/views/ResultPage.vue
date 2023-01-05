@@ -30,18 +30,12 @@
 
             <div class="col">
               <div class="row gy-4">
-                <div
-                  class="col-fluid"
-                  v-for="answer in list_of_result.answers_list"
-                  :key="answer"
-                >
+                <div class="col-fluid" v-for="answer in list_of_result.answers_list" :key="answer">
                   <h4>Question : {{ answer[0] }}</h4>
-                  <p
-                    :class="{
-                      'text-success': answer[1] === answer[3],
-                      'text-danger': answer[1] !== answer[3],
-                    }"
-                  >
+                  <p :class="{
+                    'text-success': answer[1] === answer[3],
+                    'text-danger': answer[1] !== answer[3],
+                  }">
                     Your answer : {{ answer[1] }} <br />
                     The correct answer : {{ answer[3] }}
                   </p>
@@ -53,7 +47,7 @@
           <div class="col-6">
             <div>
               The leaderboard for the quiz:
-              <RankingsVue />
+              <RankingsVue v-if="action === 'end'" />
             </div>
           </div>
         </div>
@@ -64,14 +58,23 @@
       <div class="col-fluid">
         <div class="row justify">
           <div class="col-2 offset-4 text-center">
-            <button class="btn btn-success" v-on:click="new_attempt">
-              TRY AGAIN
-            </button>
+            <Transition name="slide">
+              <RouterLink to="/questions-manager">
+                <button class="btn btn-success">
+                  <!-- v-on:click="new_attempt" -->
+                  TRY AGAIN
+                </button>
+              </RouterLink>
+            </Transition>
           </div>
           <div class="col-2 text-center">
-            <button class="btn btn-success" v-on:click="home_page">
-              HOME PAGE
-            </button>
+            <Transition name="fade">
+              <RouterLink to="/">
+                <button class="btn btn-success" v-on:click="home_page">
+                  HOME PAGE
+                </button>
+              </RouterLink>
+            </Transition>
           </div>
         </div>
       </div>
@@ -112,6 +115,7 @@ export default {
         correct: "...",
       },
       list_of_result: Array(),
+      action: 'end',
     };
   },
 
@@ -122,7 +126,7 @@ export default {
         value.playerName === this.list_of_result.playerName &&
         value.score === this.list_of_result.score
       ) {
-        return value === value ? "highlight" : "";
+        return value //=== value ? "highlight" : "";
       }
     },
   },
@@ -141,16 +145,45 @@ export default {
     // console.log(this.list_of_result.playerName)
     let quizInfo = await quizApiService.getQuizInfo();
     this.registeredScores = quizInfo.data;
-    console.log(this.registeredScores);
+    // console.log(this.registeredScores);
   },
   methods: {
     new_attempt() {
-      this.$router.push("/questions-manager");
+      this.list_of_result = Array();
+      window.localStorage.removeItem('result_quiz');
+      this.score = 0;
+      // this.$router.push("/questions-manager");
     },
     home_page() {
+      this.list_of_result = Array();
+      window.localStorage.removeItem('result_quiz');
       participationStorageService.removePlayerName();
-      this.$router.push("/");
+      // this.$router.push("/");
     },
   },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: 0.3s ease-out;
+}
+</style>
