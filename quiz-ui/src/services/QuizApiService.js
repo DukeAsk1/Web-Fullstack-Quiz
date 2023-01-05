@@ -2,7 +2,7 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}`,
-  json: true
+  json: true,
 });
 
 export default {
@@ -34,10 +34,10 @@ export default {
     return this.call("get", "questions?position=" + String(position));
   },
   getNumberOfQuestion() {
-    return this.call("get", 'nb_question');
+    return this.call("get", "nb_question");
   },
   login(password) {
-    return this.call("post", "login", { "password": password });
+    return this.call("post", "login", { password: password });
   },
   updateQuestion(question_id, question, token) {
     return this.call("put", "questions/" + question_id, question, token);
@@ -52,9 +52,9 @@ export default {
     return this.call("delete", "questions/all", null, token);
   },
   postParticipation(player_answers) {
-    return this.call("post", "participations", player_answers)
+    return this.call("post", "participations", player_answers);
   },
   deleteAllParticipations(token) {
     return this.call("delete", "participations/all", null, token);
-  }
+  },
 };
