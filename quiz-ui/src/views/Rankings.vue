@@ -4,8 +4,8 @@
       <div
         class="col-lg-6 offset-lg-3 justify-content-center align-items-center"
       >
-        <table class="table table-striped text-light">
-          <caption class="caption-top text-light">
+        <table class="table table-striped">
+          <caption class="caption-top">
             <h4>Scores précédents</h4>
           </caption>
           <thead>

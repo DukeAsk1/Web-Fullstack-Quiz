@@ -1,7 +1,4 @@
 <template>
-  <div class="about">
-    <h1>This is the admin page</h1>
-  </div>
   <div v-if="token">
     <div>
       <button @click="logOut" class="btn btn-danger">LOG OUT</button>
@@ -21,39 +18,59 @@
       </button>
     </div>
 
+    <QuestionList
+      v-if="action === 'view'"
+      :list_of_question="list_of_question"
+      @modify="modifyQuestionHandler"
+      @delete="deleteQuestionHandler"
+    />
 
-    <QuestionList v-if="action === 'view'" :list_of_question="list_of_question" @modify="modifyQuestionHandler"
-      @delete="deleteQuestionHandler" />
-
-    <QuestionModifier v-else-if="action === 'modifierQuestion'" :question="question"
-      @update:question="updateQuestion" />
-    <QuestionModifier v-else-if="action === 'newQuestion'" :question="question_form" :action="action"
-      @update:question="postQuestion" @post:json="postQuestion" />
-
+    <QuestionModifier
+      v-else-if="action === 'modifierQuestion'"
+      :question="question"
+      @update:question="updateQuestion"
+    />
+    <QuestionModifier
+      v-else-if="action === 'newQuestion'"
+      :question="question_form"
+      :action="action"
+      @update:question="postQuestion"
+      @post:json="postQuestion"
+    />
   </div>
 
-
   <div v-else>
-    <p>Enter Admin Password :</p>
-    <input type="text" v-model="password" id="name" name="name" size="10">
-    <button class="btn btn-success" type="button" @click="loginPlayer">Connexion</button>
+    <div class="container">
+      <div class="row">
+        <div class="col-4 offset-4 text-center">
+          <p>Enter Admin Password :</p>
+        </div>
+      </div>
+
+      <div class="col-4 offset-4 text-center">
+        <input type="text" v-model="password" id="name" name="name" size="10" />
+        <button class="btn btn-success" type="button" @click="loginPlayer">
+          Connexion
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// Create Vue for modifying the question or add new one 
+// Create Vue for modifying the question or add new one
 // Cherche condition for the use of button creation and modification
 import participationStorageService from "@/services/ParticipationStorageService";
 import quizApiService from "@/services/QuizApiService";
 
-import QuestionList from './QuestionList.vue';
-import QuestionModifier from './QuestionModifier.vue';
+import QuestionList from "./QuestionList.vue";
+import QuestionModifier from "./QuestionModifier.vue";
 
 export default {
   name: "Admin",
   data() {
     return {
-      password: '',
+      password: "",
       token: null,
       action: "view",
       question: null,
@@ -63,15 +80,13 @@ export default {
         text: null,
         title: null,
         image: null,
-        possibleAnswers: null
-      }
-
+        possibleAnswers: null,
+      },
     };
   },
   components: {
     QuestionList,
     QuestionModifier,
-
   },
   async created() {
     // console.log('in admin creation question mode')
@@ -84,9 +99,9 @@ export default {
       let login_info = quizApiService.login(this.password);
       let login_result = await login_info;
       if (login_result) {
-        participationStorageService.saveToken(login_result.data.token)
-        this.token = login_result.data.token
-        console.log(this.token)
+        participationStorageService.saveToken(login_result.data.token);
+        this.token = login_result.data.token;
+        console.log(this.token);
         this.updateQuestionList();
       }
     },
@@ -95,7 +110,7 @@ export default {
       participationStorageService.deleteToken();
     },
     addQuestionHandler() {
-      this.action = 'newQuestion';
+      this.action = "newQuestion";
     },
     async updateQuestionList() {
       // this.list_of_question = Array()
@@ -105,55 +120,52 @@ export default {
         let question_info = quizApiService.getQuestion(i);
         let question_result = await question_info;
 
-        this.list_of_question.push(question_result.data)
+        this.list_of_question.push(question_result.data);
       }
       // console.log('all question in db', this.list_of_question)
     },
     async modifyQuestionHandler(questionPosition) {
       let question_info = quizApiService.getQuestion(questionPosition);
       let question_result = await question_info;
-      this.action = 'modifierQuestion';
-      console.log('In modifier')
+      this.action = "modifierQuestion";
+      console.log("In modifier");
       this.question = question_result.data;
     },
     async deleteQuestionHandler(question_id) {
-      console.log('token', this.token)
+      console.log("token", this.token);
       await quizApiService.deleteQuestion(question_id, this.token);
       this.token = participationStorageService.getToken();
       this.updateQuestionList();
-      this.action = 'view';
+      this.action = "view";
     },
     async updateQuestion(new_question) {
-      await quizApiService.updateQuestion(this.question.id, new_question, this.token);
+      await quizApiService.updateQuestion(
+        this.question.id,
+        new_question,
+        this.token
+      );
       this.token = participationStorageService.getToken();
       this.updateQuestionList();
-      this.action = 'view';
-
+      this.action = "view";
     },
     async postQuestion(new_question) {
-      console.log("QUESTION AFTER SAVE", new_question)
+      console.log("QUESTION AFTER SAVE", new_question);
       await quizApiService.postQuestion(new_question, this.token);
       this.token = participationStorageService.getToken();
-      this.updateQuestionList()
-      this.action = 'view'
+      this.updateQuestionList();
+      this.action = "view";
     },
     async deleteAllQuestions() {
-      await quizApiService.deleteAllQuestions(this.token)
-      this.token = participationStorageService.getToken()
-      this.updateQuestionList()
-      this.action = 'view'
+      await quizApiService.deleteAllQuestions(this.token);
+      this.token = participationStorageService.getToken();
+      this.updateQuestionList();
+      this.action = "view";
     },
     async deleteAllParticipations() {
-      await quizApiService.deleteAllParticipations(this.token)
-      this.token = participationStorageService.getToken()
-      this.action = 'view'
+      await quizApiService.deleteAllParticipations(this.token);
+      this.token = participationStorageService.getToken();
+      this.action = "view";
     },
-
   },
-
-}
-
+};
 </script>
-
-
-

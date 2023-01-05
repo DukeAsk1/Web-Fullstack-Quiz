@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="card mb-3 bg-secondary col-10 offset-1">
+    <div class="card mb-3 col-10 offset-1">
       <div class="row">
         <div class="col">
           <img v-if="question.image" :src="question.image" />
@@ -20,14 +20,24 @@
               <div class="col">
                 <div class="row">
                   <p class="card-text">
-                    <small class="text-muted">Veuillez choisir une des options ci-dessous</small>
+                    <small class="text-muted"
+                      >Veuillez choisir une des options ci-dessous</small
+                    >
                   </p>
                 </div>
 
                 <div class="row justify-content-center">
-                  <div v-for="(value, index) in question.possibleAnswers" @click="$emit('answer-selected', index)"
-                    class="col">
-                    <input type="radio" v-model="selected" :value="value" name="radAnswer" />
+                  <div
+                    v-for="(value, index) in question.possibleAnswers"
+                    @click="$emit('answer-selected', index)"
+                    class="col"
+                  >
+                    <input
+                      type="radio"
+                      v-model="selected"
+                      :value="value"
+                      name="radAnswer"
+                    />
                     {{ value.text }}
                   </div>
                 </div>

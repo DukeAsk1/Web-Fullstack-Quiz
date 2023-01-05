@@ -4,17 +4,19 @@
       <div class="col text-center">
         <h1>Page d'accueil</h1>
       </div>
-    </div>
 
-    <!-- Leaderboard -->
-    <RankingsVue />
-    <!--  -->
+      <!-- Leaderboard -->
+      <RankingsVue />
+      <!--  -->
 
-    <div class="col text-center">
-      <button class="btn btn-success">
-        <!-- hover effect to fix -->
-        <router-link to="/new-quiz-page">Démarrer le quiz !</router-link>
-      </button>
+      <div class="col text-center">
+        <button class="btn btn-success">
+          <!-- hover effect to fix -->
+          <router-link class="text-light" to="/new-quiz-page"
+            >Démarrer le quiz !</router-link
+          >
+        </button>
+      </div>
     </div>
   </div>
 </template>

@@ -10,22 +10,28 @@
 
         <div class="col">
           <div class="row gy-4">
-            <div class="col-fluid" v-for="question in list_of_question" :key="question">
-              <h4>Question : {{ question.text }}</h4>
-              <p>
-                <img :src="question.image" /> <br />
-                Position : {{ question.position }} <br />
-              <div class="col-fluid" v-for="answer in question.possibleAnswers" :key="answer">
-                Answer : {{ answer.text }} Value : {{ answer.isCorrect }}
+            <div class="container">
+              <div class="row">
+                <div class="col" v-for="question in list_of_question" :key="question">
+                  <h4>Question : {{ question.text }}</h4>
+                  <p>
+                    <img :src="question.image" /> <br />
+                    Position : {{ question.position }} <br />
+                  <div class="col-fluid" v-for="answer in question.possibleAnswers" :key="answer">
+                    Answer : {{ answer.text }} Value : {{ answer.isCorrect }}
+                  </div>
+                  </p>
+                  <button @click="$emit('modify', question.position)" class="btn btn-warning">
+                    Modify
+                  </button>
+                  <button @click="$emit('delete', question.id)" class="btn btn-danger">
+                    Delete
+                  </button>
+                </div>
               </div>
-              </p>
-              <button @click="$emit('modify', question.position)" class="btn btn-warning">
-                Modify
-              </button>
-              <button @click="$emit('delete', question.id)" class="btn btn-danger">
-                Delete
-              </button>
+              
             </div>
+            
           </div>
         </div>
       </div>
