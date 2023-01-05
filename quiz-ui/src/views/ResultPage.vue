@@ -3,14 +3,14 @@
     <!-- Finduquiz -->
     <div class="row g-4">
       <div class="col-fluid">
-        <h2 class="text bg-gradient text-center">Fin du quiz !</h2>
+        <h2 class="text bg-gradient text-center">End of the quiz !</h2>
       </div>
 
       <!-- Welcome et Score -->
       <div class="col-fluid text-center">
-        <h3>Salut, {{ list_of_result.playerName }}</h3>
+        <h3>Hi, {{ list_of_result.playerName }}</h3>
         <div>
-          Ton score est de :
+          Your score is :
           <strong>
             {{ list_of_result.score }}
             point{{ list_of_result.score > 1 ? "s" : "" }}
@@ -25,7 +25,7 @@
           <!-- Left -->
           <div class="col-6">
             <div class="col-fluid">
-              <h3>Voici tes réponses :</h3>
+              <h3>Here are your answers :</h3>
             </div>
 
             <div class="col">

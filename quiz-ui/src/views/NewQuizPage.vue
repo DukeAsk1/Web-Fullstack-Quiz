@@ -2,11 +2,11 @@
   <div class="container">
     <div class="row g-3">
       <div class="col-4 offset-4 text-center">
-        <h1>Nouveau quiz !</h1>
+        <h1>New quiz !</h1>
       </div>
 
       <div class="col-4 offset-4 text-center">
-        <p>Veuillez saisir votre pseudonyme :</p>
+        <p>Please enter your username</p>
       </div>
 
       <div class="col-4 offset-4">
@@ -20,12 +20,12 @@
             name="name"
             placeholder="votrepseudo"
           />
-          <label class="text-dark" for="name">Pseudonyme</label>
+          <label class="text-dark" for="name">Username</label>
         </div>
       </div>
 
       <div class="col-4 offset-4 text-center mt-3">
-        <button class="btn btn-success" @click="launchNewQuiz">GO!</button>
+        <button class="btn btn-success" @click="launchNewQuiz">GO !</button>
       </div>
 
       <div

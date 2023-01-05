@@ -1,42 +1,53 @@
 <template>
   <div v-if="token">
-    <div>
-      <button @click="logOut" class="btn btn-danger">LOG OUT</button>
-    </div>
-    <div>
-      <button @click="addQuestionHandler" class="btn btn-success">
-        Add A Question
-      </button>
+    <div class="row text-center w-50 m-auto mt-5">
+      <div class="col">
+        <div>
+          <button @click="logOut" class="btn btn-danger">Log out</button>
+        </div>
+      </div>
+
+      <div class="col">
+        <div>
+          <button @click="addQuestionHandler" class="btn btn-success">
+            Add a question
+          </button>
+        </div>
+      </div>
+
+      <div class="col-3">
+        <button @click="deleteAllQuestions" class="btn btn-danger">
+          Delete all questions
+        </button>
+      </div>
+      <div class="col-4">
+        <button @click="deleteAllParticipations" class="btn btn-danger">
+          Delete all participations
+        </button>
+      </div>
     </div>
 
-    <div>
-      <button @click="deleteAllQuestions" class="btn btn-danger">
-        DELETE ALL QUESTIONS
-      </button>
-      <button @click="deleteAllParticipations" class="btn btn-danger">
-        DELETE ALL PARTICIPATIONS
-      </button>
+    <div class="row mt-5">
+      <QuestionList
+        v-if="action === 'view'"
+        :list_of_question="list_of_question"
+        @modify="modifyQuestionHandler"
+        @delete="deleteQuestionHandler"
+      />
+
+      <QuestionModifier
+        v-else-if="action === 'modifierQuestion'"
+        :question="question"
+        @update:question="updateQuestion"
+      />
+      <QuestionModifier
+        v-else-if="action === 'newQuestion'"
+        :question="question_form"
+        :action="action"
+        @update:question="postQuestion"
+        @post:json="postQuestion"
+      />
     </div>
-
-    <QuestionList
-      v-if="action === 'view'"
-      :list_of_question="list_of_question"
-      @modify="modifyQuestionHandler"
-      @delete="deleteQuestionHandler"
-    />
-
-    <QuestionModifier
-      v-else-if="action === 'modifierQuestion'"
-      :question="question"
-      @update:question="updateQuestion"
-    />
-    <QuestionModifier
-      v-else-if="action === 'newQuestion'"
-      :question="question_form"
-      :action="action"
-      @update:question="postQuestion"
-      @post:json="postQuestion"
-    />
   </div>
 
   <div v-else>
