@@ -1,50 +1,81 @@
 <template>
-  <div class="about">
-    <h1>This is the result page</h1>
+  <div class="container">
+    <!-- Finduquiz -->
+    <div class="row g-4">
+      <div class="col-fluid">
+        <h2 class="text bg-gradient text-center">Fin du quiz !</h2>
+      </div>
 
-    <div>
-      <li>
-        <a>
-          Hi {{ list_of_result.playerName }}
-        </a>
-        <a>
-          Your Score is : {{ list_of_result.score }}
-        </a>
+      <!-- Welcome et Score -->
+      <div class="col-fluid text-center">
+        <h3>Salut, {{ list_of_result.playerName }}</h3>
+        <div>
+          Ton score est de :
+          <strong>
+            {{ list_of_result.score }}
+            point{{ list_of_result.score > 1 ? "s" : "" }}
+          </strong>
+        </div>
+      </div>
+      <!--  -->
 
-        <a>
-          <label for='attempt_answers'>Detail of your attempt :</label>
-          <!-- <select id="attempt_answers" size="100"> -->
-          <ul v-for="answer in list_of_result.answers_list" :key="answer">
-            <h2>Question : {{ answer[0] }}</h2>
-            <a>
-              Your answer : {{ answer[1] }}
-            </a>
-            <a>
-              The correct answer : {{ answer[3] }}
-            </a>
-          </ul>
-          <!-- </select> -->
-        </a>
-      </li>
-    </div>
-    <div>
-      The leaderboard for the quiz:
-      <table>
-        <tr v-for="row in this.registeredScores.scores" :class="highlightClass(row)">
-          <td>{{ row.playerName }}</td>
-          <td>{{ row.score }}</td>
-        </tr>
-      </table>
-    </div>
-    <div>
-      <button v-on:click="new_attempt">
-        TRY AGAIN
-      </button>
-      <button v-on:click="home_page">
-        HOME PAGE
-      </button>
+      <!-- Affichage des réponses -->
+      <div class="col">
+        <div class="row">
+          <!-- Left -->
+          <div class="col-6">
+            <div class="col-fluid">
+              <h3>Voici tes réponses :</h3>
+            </div>
 
+            <div class="col">
+              <div class="row gy-4">
+                <div
+                  class="col-fluid"
+                  v-for="answer in list_of_result.answers_list"
+                  :key="answer"
+                >
+                  <h4>Question : {{ answer[0] }}</h4>
+                  <p
+                    :class="{
+                      'text-success': answer[1] === answer[3],
+                      'text-danger': answer[1] !== answer[3],
+                    }"
+                  >
+                    Your answer : {{ answer[1] }} <br />
+                    The correct answer : {{ answer[3] }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Right -->
+          <div class="col-6">
+            <div>
+              The leaderboard for the quiz:
+              <RankingsVue />
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--  -->
 
+      <!-- boutons -->
+      <div class="col-fluid">
+        <div class="row justify">
+          <div class="col-2 offset-4 text-center">
+            <button class="btn btn-success" v-on:click="new_attempt">
+              TRY AGAIN
+            </button>
+          </div>
+          <div class="col-2 text-center">
+            <button class="btn btn-success" v-on:click="home_page">
+              HOME PAGE
+            </button>
+          </div>
+        </div>
+      </div>
+      <!--  -->
     </div>
   </div>
 </template>
@@ -54,7 +85,6 @@
   .about {
     min-height: 100vh;
     display: flex;
-    ;
   }
 }
 
@@ -63,21 +93,12 @@
 }
 </style>
 
-
 <script>
-
-/*
-
-pour les résultats, afficher la question, la réponse selectionnée, la bonne réponse,
-et une image en fonction du résultat, flèche verte si égale, flèche rouge si non
-
-
-
-*/
-
-import QuestionDisplay from './QuestionDisplay.vue';
+import QuestionDisplay from "./QuestionDisplay.vue";
 import quizApiService from "@/services/QuizApiService";
 import participationStorageService from "@/services/ParticipationStorageService";
+import RankingsVue from "./Rankings.vue";
+
 // console.log(selected);
 export default {
   name: "Questions Manager",
@@ -88,42 +109,48 @@ export default {
       answer_current_question: {
         index: 0,
         answer: "...",
-        correct: '...',
+        correct: "...",
       },
       list_of_result: Array(),
     };
   },
+
   computed: {
     highlightClass(value) {
-      if (value.date === this.list_of_result.date_attempt && value.playerName === this.list_of_result.playerName && value.score === this.list_of_result.score) {
-        return value === value ? 'highlight' : '';
+      if (
+        value.date === this.list_of_result.date_attempt &&
+        value.playerName === this.list_of_result.playerName &&
+        value.score === this.list_of_result.score
+      ) {
+        return value === value ? "highlight" : "";
       }
-    }
+    },
   },
 
   components: {
-    QuestionDisplay
+    QuestionDisplay,
+    RankingsVue,
   },
 
   async created() {
-
     // parse the list as JSON
-    this.list_of_result = JSON.parse(window.localStorage.getItem('result_quiz')).data;
+    this.list_of_result = JSON.parse(
+      window.localStorage.getItem("result_quiz")
+    ).data;
     // console.log("Result page quiz", this.list_of_result);
     // console.log(this.list_of_result.playerName)
     let quizInfo = await quizApiService.getQuizInfo();
     this.registeredScores = quizInfo.data;
-    console.log(this.registeredScores)
+    console.log(this.registeredScores);
   },
   methods: {
     new_attempt() {
-      this.$router.push('/questions-manager');
+      this.$router.push("/questions-manager");
     },
     home_page() {
       participationStorageService.removePlayerName();
-      this.$router.push('/');
-    }
-  }
-
+      this.$router.push("/");
+    },
+  },
 };
 </script>

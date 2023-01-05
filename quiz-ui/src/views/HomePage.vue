@@ -1,25 +1,39 @@
 <template>
-  <h1>Home page</h1>
-  <div>{{ registeredScores }}</div>
+  <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <h1>Page d'accueil</h1>
+      </div>
+    </div>
 
-  <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
-    {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
+    <!-- Leaderboard -->
+    <RankingsVue />
+    <!--  -->
+
+    <div class="col text-center">
+      <button class="btn btn-success">
+        <!-- hover effect to fix -->
+        <router-link to="/new-quiz-page">Démarrer le quiz !</router-link>
+      </button>
+    </div>
   </div>
-
-  <router-link to="/start-new-quiz-page">Démarrer le quiz !</router-link>
 </template>
 
 <script>
-
 import quizApiService from "@/services/QuizApiService";
+import RankingsVue from "./Rankings.vue";
 
 export default {
   name: "HomePage",
   data() {
     return {
       registeredScores: [],
-      playerName: ''
+      playerName: "",
     };
+  },
+
+  components: {
+    RankingsVue,
   },
 
   async created() {
@@ -27,8 +41,6 @@ export default {
 
     let quizInfo = await quizApiService.getQuizInfo();
     this.registeredScores = quizInfo.data;
-
-  }
+  },
 };
 </script>
-
