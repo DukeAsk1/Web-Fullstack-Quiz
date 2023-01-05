@@ -23,8 +23,12 @@
 
     <div class="col">
       <label>Image</label>
-      <img :src="'data:image/jpeg;base64,' + question.image" ref="image" @change="convertToImage" />
+      <img :src="question.image" ref="image" @change="convertToImage" />
       <input type="file" placeholder="Image" accept="image/*" @change="convertToBase64">
+    </div>
+
+    <div>
+      <label v-if="too_many">TOO MANY ANSWERS IN CHOICES</label>
     </div>
 
     <div class="col">
@@ -129,6 +133,7 @@ export default {
       },
       base64Image: '',
       updatedAnswersArray: Array(),
+      too_many: '',
     }
   },
 
@@ -156,8 +161,7 @@ export default {
           // Note: arrow function used here, so that "this.base64Image" refers to the image data in Vue component
           // Read image as base64 and set to base64Image
           this.base64Image = e.target.result
-          this.question.image = this.base64Image.substring(23);
-          console.log('size of base string', this.base64Image.substring(23).length)
+          this.question.image = this.base64Image;
         }
         // Start the reader job - read file as a data url (base64 format)
         reader.readAsDataURL(input.files[0])
@@ -218,6 +222,9 @@ export default {
         this.question.possibleAnswers = json.possibleAnswers;
 
         // console.log(this.question.possibleAnswers)
+        if (this.question.possibleAnswers.length > 4) {
+          this.too_many = 'too many input answers';
+        }
 
         for (let i = 0; i < this.question.possibleAnswers.length; i++) {
           console.log("index i in answers", this.question.possibleAnswers[i]);
@@ -239,7 +246,6 @@ export default {
         // this.updatedAnswersArray.push(answer_4);
 
 
-        console.log("Answer Array JSON upload", this.updatedAnswersArray);
         // {
         // "id": 1,
         // "position": 1,
