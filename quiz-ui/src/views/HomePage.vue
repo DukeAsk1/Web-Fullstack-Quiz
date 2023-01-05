@@ -6,6 +6,11 @@
       </div>
     </div>
 
+    <button class="btn btn-success">
+      <!-- hover effect to fix -->
+      <router-link to="/admin">Admin Access</router-link>
+    </button>
+
     <!-- Leaderboard -->
     <RankingsVue />
     <!--  -->

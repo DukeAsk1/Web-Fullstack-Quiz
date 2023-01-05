@@ -4,19 +4,19 @@
   </div>
   <div v-if="token">
     <div>
-      <button @click="logOut">LOG OUT</button>
+      <button @click="logOut" class="btn btn-danger">LOG OUT</button>
     </div>
     <div>
-      <button @click="addQuestionHandler">
+      <button @click="addQuestionHandler" class="btn btn-success">
         Add A Question
       </button>
     </div>
 
     <div>
-      <button @click="deleteAllQuestions">
+      <button @click="deleteAllQuestions" class="btn btn-danger">
         DELETE ALL QUESTIONS
       </button>
-      <button @click="deleteAllParticipations">
+      <button @click="deleteAllParticipations" class="btn btn-danger">
         DELETE ALL PARTICIPATIONS
       </button>
     </div>
@@ -74,9 +74,9 @@ export default {
 
   },
   async created() {
-    console.log('in admin creation question mode')
-    this.token = participationStorageService.getToken();
-    this.updateQuestionList();
+    // console.log('in admin creation question mode')
+    // this.token = participationStorageService.getToken();
+    // this.updateQuestionList();
     // console.log(this.list_of_question);
   },
   methods: {
@@ -87,6 +87,7 @@ export default {
         participationStorageService.saveToken(login_result.data.token)
         this.token = login_result.data.token
         console.log(this.token)
+        this.updateQuestionList();
       }
     },
     async logOut() {

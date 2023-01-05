@@ -6,29 +6,17 @@
           Question {{ currentQuestionPosition }} / {{ totalNumberOfQuestion }}
         </h1>
 
-        <QuestionDisplay
-          :question="currentQuestion"
-          @answer-selected="answerClickedHandler"
-          class="text-center"
-        />
+        <QuestionDisplay :question="currentQuestion" @answer-selected="answerClickedHandler" class="text-center" />
       </div>
     </div>
 
     <div class="row">
       <div class="text-center">
-        <button
-          v-if="currentQuestionPosition != totalNumberOfQuestion"
-          @click="next_question"
-          class="btn btn-success"
-        >
+        <button v-if="currentQuestionPosition != totalNumberOfQuestion" @click="next_question" class="btn btn-success">
           Next
         </button>
 
-        <button
-          v-if="currentQuestionPosition == totalNumberOfQuestion"
-          @click="next_question"
-          class="btn btn-success"
-        >
+        <button v-if="currentQuestionPosition == totalNumberOfQuestion" @click="next_question" class="btn btn-success">
           Submit and see results
         </button>
       </div>
@@ -104,31 +92,9 @@ export default {
       } else {
         this.currentQuestionPosition += 1;
         this.currentQuestion = await this.loadQuestionByposition();
-        // console.log('current question')
-        // console.log(this.currentQuestion);
+        this.selected = 0;
       }
-      // const selectedAnswer = this.selected;
-      // // const answer = this.currentQuestion.flatMap(currentQuestion =>
-      // //                                     currentQuestion.possibleAnswers).find(possibleAnswers =>
-      // //                                     possibleAnswers.id === selectedAnswer);
-      // if (selectedAnswer.isCorrect) {
-      //   this.score++;
-      // }
 
-      // this.answer_current_question.index = this.currentQuestionPosition;
-      // this.answer_current_question.answer = this.selected.text;
-      // this.getCorrectAnswer();
-      // this.list_of_answers.push(this.answer_current_question);
-      // this.currentQuestionPosition++;
-      // //this.calculateScore();
-      // console.log('new position');
-      // console.log(this.currentQuestionPosition);
-      // this.currentQuestion = this.loadQuestionByposition(this.currentQuestionPosition);
-      // console.log(this.currentQuestion);
-
-      // this.currentQuestion.questionTitle = currentQuestion.data.title;
-      // this.currentQuestion.questionText = currentQuestion.data.text;
-      // this.currentQuestion.possibleAnswers = currentQuestion.data.possibleAnswers;
     },
     async answerClickedHandler(value) {
       this.selected = value + 1;

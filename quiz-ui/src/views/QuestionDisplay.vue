@@ -20,19 +20,14 @@
               <div class="col">
                 <div class="row">
                   <p class="card-text">
-                    <small class="text-muted"
-                      >Veuillez choisir une des options ci-dessous</small
-                    >
+                    <small class="text-muted">Veuillez choisir une des options ci-dessous</small>
                   </p>
                 </div>
 
                 <div class="row justify-content-center">
-                  <div
-                    v-for="(value, index) in question.possibleAnswers"
-                    @click="$emit('answer-selected', index)"
-                    class="col"
-                  >
-                    <input type="radio" :value="value" name="radAnswer" />
+                  <div v-for="(value, index) in question.possibleAnswers" @click="$emit('answer-selected', index)"
+                    class="col">
+                    <input type="radio" v-model="selected" :value="value" name="radAnswer" />
                     {{ value.text }}
                   </div>
                 </div>
