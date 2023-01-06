@@ -267,27 +267,6 @@ def get_quiz_info():
         # handle the error
         print(f'An error occurred: {e}')
 
-
-    ##
-    # une requête pour insérer le score du participant
-    # une requête pour avoir le leaderboard (bas de la page)
-
-    # front: username et le score (haut de la page result)
-
-
-    # BONUS INTERMEDIAIRE
-    # Liste déroulantes: mes reponses et les erreurs
-    # Question avec le numéro: 
-    # Réponse de l'utilisateur : icone croix et fleche verte (en fonction du boolean)
-    # Bonne réponse : 
-
-    
-
-    # front : si le leaderboard le score est dedans, tu le surlignes
-
-
-    ##
-
     try:
         participation_info = cur.execute(f"SELECT playerName,score,date FROM Attempts ORDER BY score DESC LIMIT 10")
     except sqlite3.Error as e:
@@ -359,7 +338,7 @@ def delete_all_participations():
     cur = db.cursor()
     cur.execute("begin")
     try:
-        cur.execute(f"DELETE FROM Participation")
+        cur.execute(f"DELETE FROM Attempts")
     except sqlite3.Error as e:
         # handle the error
         print(f'An error occurred: {e}')
