@@ -4,7 +4,7 @@
       <div class="col-lg-6 offset-lg-3 justify-content-center align-items-center">
         <table class="table table-striped">
           <caption class="caption-top">
-            <h4>Scores précédents</h4>
+            <h4 align="center">Scores précédents</h4>
           </caption>
           <thead>
             <tr>
@@ -13,20 +13,20 @@
               <th>Date</th>
             </tr>
           </thead>
-          <div class="row" v-if="action === 'start'">
-            <tr v-for="scoreEntry in registeredScores.scores" v-bind:key="scoreEntry.date">
-              <th>{{ scoreEntry.playerName }}</th>
-              <th>{{ scoreEntry.score }}</th>
-              <th>{{ scoreEntry.date }}</th>
-            </tr>
-          </div>
-          <div class="row" v-if="action === 'end'" v-try="getEndResult()">
-            <tr v-for="scoreEntry in registeredScores.scores" v-bind:key="scoreEntry.date">
-              <th>{{ scoreEntry.playerName }}</th>
-              <th>{{ scoreEntry.score }}</th>
-              <th>{{ scoreEntry.date }}</th>
-            </tr>
-          </div>
+          <tr v-if="table === 'start'" v-for="scoreEntry in registeredScores.scores" v-bind:key="scoreEntry.date">
+            <th>{{ scoreEntry.playerName }}</th>
+            <th>{{ scoreEntry.score }}</th>
+            <th>{{ scoreEntry.date }}</th>
+          </tr>
+
+          <tr v-if="table === 'end'" v-for="scoreEntry in registeredScores.scores" v-bind:key="scoreEntry.date"
+            :class="getEndResult()">
+            <!-- :class="highlight_current_score(scoreEntry)"> -->
+            <th>{{ scoreEntry.playerName }}</th>
+            <th>{{ scoreEntry.score }}</th>
+            <th>{{ scoreEntry.date }}</th>
+          </tr>
+
         </table>
       </div>
     </div>
@@ -38,6 +38,12 @@ import quizApiService from "@/services/QuizApiService";
 
 export default {
   name: "Rankings",
+  props: {
+    currentPlayer: {
+      type: Object,
+    },
+    table: "",
+  },
   data() {
     return {
       registeredScores: [],
@@ -45,20 +51,48 @@ export default {
       list_of_result: Array(),
     };
   },
-  computed: {
 
-  },
-  props: {
-    currentPlayer: {
-      type: Object,
+  computed: {
+    highlight_current_score(value) {
+      if (
+        value.date === this.list_of_result.date_attempt &&
+        value.playerName === this.list_of_result.playerName &&
+        value.score === this.list_of_result.score
+      ) {
+        return value === value ? "success" : "";
+      }
     },
-    action: "",
   },
+
 
   async created() {
 
     let quizInfo = await quizApiService.getQuizInfo();
     this.registeredScores = quizInfo.data;
+    // console.log("log RANKING", this.action);
   },
+  methods: {
+    async getEndResult() {
+      this.list_of_result = JSON.parse(
+        window.localStorage.getItem("result_quiz")
+      ).data;
+      return this.list_of_result;
+    },
+    async highlight_current_score(value) {
+      if (
+        value.date === this.list_of_result.date_attempt &&
+        value.playerName === this.list_of_result.playerName &&
+        value.score === this.list_of_result.score
+      ) {
+        return value === value ? "highlight" : "";
+      }
+    },
+  }
 };
 </script>
+
+<style>
+.success {
+  background-color: green;
+}
+</style>

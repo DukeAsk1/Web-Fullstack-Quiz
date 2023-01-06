@@ -28,26 +28,30 @@
               <h3>Voici tes réponses :</h3>
             </div>
 
-            <div class="col">
-              <div class="row gy-4">
-                <div class="col-fluid" v-for="answer in list_of_result.answers_list" :key="answer">
-                  <h4>Question : {{ answer[0] }}</h4>
-                  <p :class="{
-                    'text-success': answer[1] === answer[3],
-                    'text-danger': answer[1] !== answer[3],
-                  }">
+            <transition name="slide">
+              <div class="col">
+                <div class="row gy-4">
+                  <div class="col-fluid" v-for="answer in this.list_of_result.answers_list" :key="answer">
+
+                    <p :class="{
+                      'text-success': answer[1] === answer[3],
+                      'text-danger': answer[1] !== answer[3],
+                    }" v-if="answer[4]">
+                    <h4 :style="{ color: 'black' }">Question : {{ answer[0] }}</h4>
                     Your answer : {{ answer[1] }} <br />
                     The correct answer : {{ answer[3] }}
-                  </p>
+                    </p>
+                  </div>
+                  <button @click="toggleResult">{{ resultText }}</button>
                 </div>
               </div>
-            </div>
+            </transition>
           </div>
           <!-- Right -->
           <div class="col-6">
-            <div>
-              The leaderboard for the quiz:
-              <RankingsVue v-if="action === 'end'" />
+            <div align="center">
+              <h2>The leaderboard for the quiz:</h2>
+              <RankingsVue :table="table" />
             </div>
           </div>
         </div>
@@ -102,7 +106,6 @@ import quizApiService from "@/services/QuizApiService";
 import participationStorageService from "@/services/ParticipationStorageService";
 import RankingsVue from "./Rankings.vue";
 
-// console.log(selected);
 export default {
   name: "Questions Manager",
   data() {
@@ -115,7 +118,8 @@ export default {
         correct: "...",
       },
       list_of_result: Array(),
-      action: 'end',
+      table: 'end',
+      resultText: 'Show Details',
     };
   },
 
@@ -141,11 +145,17 @@ export default {
     this.list_of_result = JSON.parse(
       window.localStorage.getItem("result_quiz")
     ).data;
-    // console.log("Result page quiz", this.list_of_result);
-    // console.log(this.list_of_result.playerName)
     let quizInfo = await quizApiService.getQuizInfo();
     this.registeredScores = quizInfo.data;
-    // console.log(this.registeredScores);
+    for (let i = 0; i < this.list_of_result.answers_list.length; i++) {
+      if (i < 3) {
+        this.list_of_result.answers_list[i][4] = true;
+      }
+      else {
+        this.list_of_result.answers_list[i][4] = false;
+      }
+    }
+    console.log(this.list_of_result);
   },
   methods: {
     new_attempt() {
@@ -160,6 +170,20 @@ export default {
       participationStorageService.removePlayerName();
       // this.$router.push("/");
     },
+
+    async toggleResult() {
+      this.resultText = this.resultText === 'Show Details' ? 'Hide Details' : 'Show Details'
+      if (this.resultText === 'Show Details') {
+        for (let i = 3; i < this.list_of_result.answers_list.length; i++) {
+          this.list_of_result.answers_list[i][4] = false;
+        }
+      }
+      if (this.resultText === 'Hide Details') {
+        for (let i = 3; i < this.list_of_result.answers_list.length; i++) {
+          this.list_of_result.answers_list[i][4] = true;
+        }
+      }
+    }
   },
 };
 </script>
@@ -176,7 +200,7 @@ export default {
 }
 
 
-.slide-enter-from,
+/* .slide-enter-from,
 .slide-leave-to {
   opacity: 0;
   transform: translateX(-100%);
@@ -185,5 +209,15 @@ export default {
 .slide-enter-active,
 .slide-leave-active {
   transition: 0.3s ease-out;
+} */
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all .5s;
+}
+
+.slide-enter,
+.slide-leave-to {
+  transform: translateY(-100%);
 }
 </style>

@@ -6,7 +6,7 @@
       </div>
 
       <!-- Leaderboard -->
-      <RankingsVue v-if="action === 'start'" />
+      <RankingsVue :table="table" />
       <!--  -->
 
       <div class="col text-center">
@@ -31,6 +31,7 @@ export default {
     return {
       registeredScores: [],
       playerName: "",
+      table: "start",
     };
   },
 
@@ -43,6 +44,7 @@ export default {
 
     let quizInfo = await quizApiService.getQuizInfo();
     this.registeredScores = quizInfo.data;
+    console.log(this.table);
   },
 };
 </script>
