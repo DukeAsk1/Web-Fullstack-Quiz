@@ -174,7 +174,7 @@
             style="width: 5rem"
             @click="sendToPreviousPage()"
           >
-            Back
+            Discard
           </button>
         </div>
       </div>
