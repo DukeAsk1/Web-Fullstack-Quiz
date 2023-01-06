@@ -51,18 +51,43 @@
   </div>
 
   <div v-else>
-    <div class="container">
+    <div class="container mt-5">
       <div class="row">
-        <div class="col-4 offset-4 text-center">
-          <p>Enter Admin Password :</p>
+        <div class="col-6 offset-3 text-center">
+          <h2>Enter Admin Password :</h2>
         </div>
       </div>
 
-      <div class="col-4 offset-4 text-center">
-        <input type="text" v-model="password" id="name" name="name" size="10" />
-        <button class="btn btn-success" type="button" @click="loginPlayer">
-          Connexion
-        </button>
+      <div class="col-6 offset-3 text-center mt-5">
+        <div class="row gy-2">
+          <div class="col-6 offset-3">
+            <div class="form-floating mb-3">
+              <input
+                type="password"
+                class="form-control"
+                v-model="password"
+                id="name"
+                name="name"
+                placeholder="yourpassword"
+              />
+              <label class="text-dark" for="name">Admin password</label>
+            </div>
+          </div>
+
+          <div class="col-fluid">
+            <button class="btn btn-success" type="button" @click="loginPlayer">
+              Log in
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="col-6 offset-3 mt-3 text-center alert alert-danger alert-dismissible fade show"
+        role="alert"
+        v-if="!password && wrongSubmit"
+      >
+        <strong>Error !</strong> Please enter a password
       </div>
     </div>
   </div>
@@ -82,6 +107,7 @@ export default {
   data() {
     return {
       password: "",
+      wrongSubmit: false,
       token: null,
       action: "view",
       question: null,
@@ -107,6 +133,10 @@ export default {
   },
   methods: {
     async loginPlayer() {
+      if (this.password.toString() === "") {
+        this.wrongSubmit = true;
+        return;
+      }
       let login_info = quizApiService.login(this.password);
       let login_result = await login_info;
       if (login_result) {

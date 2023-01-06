@@ -7,25 +7,28 @@
             <div class="container">
               <div class="row g-5">
                 <div class="col-4 offset-1" v-for="question in list_of_question" :key="question">
-                  <div class="row">
-                    <h4>Question : {{ question.text }}</h4>
-                  <p>
-                    <img :src="question.image" /> <br />
-                      Position : {{ question.position }} <br />
-                    <div class="col-fluid" v-for="answer in question.possibleAnswers" :key="answer">
-                      Answer : {{ answer.text }} Value : {{ answer.isCorrect }}
+                  <div class="card p-4 rounded-4">
+                    <div class="row">
+                      <h4>Question : {{ question.text }}</h4>
+                    <p>
+                      <img :src="question.image" /> <br />
+                        Position : {{ question.position }} <br />
+                      <div class="col-fluid" v-for="answer in question.possibleAnswers" :key="answer">
+                        Answer : {{ answer.text }} Value : {{ answer.isCorrect }}
+                      </div>
+                    </p>
+                    <div class="col text-center">
+                      <button @click="$emit('modify', question.position)" class="btn btn-warning">
+                        Modify
+                      </button>
                     </div>
-                  </p>
-                  <div class="col text-center">
-                    <button @click="$emit('modify', question.position)" class="btn btn-warning">
-                      Modify
-                    </button>
+                    <div class="col text-center">
+                      <button @click="$emit('delete', question.id)" class="btn btn-danger">
+                        Suppress
+                      </button>
+                    </div>
                   </div>
-                  <div class="col text-center">
-                    <button @click="$emit('delete', question.id)" class="btn btn-danger">
-                      Suppress
-                    </button>
-                  </div>
+                  
                   
                   </div>
                   
