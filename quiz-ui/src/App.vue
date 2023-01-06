@@ -5,7 +5,7 @@ import HeaderVue from "./views/Header.vue";
 </script>
 
 <template>
-  <div class="container-fluid p-0">
+  <div class="container-fluid p-0 h-100">
     <HeaderVue />
     <!-- <Transition name="fade">
       <RouterView />

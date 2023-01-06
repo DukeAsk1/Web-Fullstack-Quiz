@@ -1,39 +1,43 @@
 <template>
   <ul>
 
-    <div class="row">
-      <!-- Left -->
-      <div class="col-6">
-        <div class="col-fluid">
-          <h3>Voici tes réponses :</h3>
-        </div>
-
+    <div class="row">      
         <div class="col">
           <div class="row gy-4">
             <div class="container">
-              <div class="row">
-                <div class="col" v-for="question in list_of_question" :key="question">
-                  <h4>Question : {{ question.text }}</h4>
-                  <p>
-                    <img :src="question.image" /> <br />
-                    Position : {{ question.position }} <br />
-                  <div class="col-fluid" v-for="answer in question.possibleAnswers" :key="answer">
-                    Answer : {{ answer.text }} Value : {{ answer.isCorrect }}
+              <div class="row g-5">
+                <div class="col-4 offset-1" v-for="question in list_of_question" :key="question">
+                  <div class="card p-4 rounded-4">
+                    <div class="row">
+                      <h4>Question : {{ question.text }}</h4>
+                    <p>
+                      <img :src="question.image" /> <br />
+                        Position : {{ question.position }} <br />
+                      <div class="col-fluid" v-for="answer in question.possibleAnswers" :key="answer">
+                        Answer : {{ answer.text }} Value : {{ answer.isCorrect }}
+                      </div>
+                    </p>
+                    <div class="col text-center">
+                      <button @click="$emit('modify', question.position)" class="btn btn-warning">
+                        Modify
+                      </button>
+                    </div>
+                    <div class="col text-center">
+                      <button @click="$emit('delete', question.id)" class="btn btn-danger">
+                        Suppress
+                      </button>
+                    </div>
                   </div>
-                  </p>
-                  <button @click="$emit('modify', question.position)" class="btn btn-warning">
-                    Modify
-                  </button>
-                  <button @click="$emit('delete', question.id)" class="btn btn-danger">
-                    Delete
-                  </button>
+                  
+                  
+                  </div>
+                  
                 </div>
               </div>
               
             </div>
             
           </div>
-        </div>
       </div>
     </div>
     <!-- <li v-for="question in list_of_question">
