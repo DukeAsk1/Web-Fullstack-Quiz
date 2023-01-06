@@ -12,6 +12,7 @@
       <div class="col-4 offset-4">
         <!-- todo inputfloat -->
         <div class="form-floating mb-3">
+
           <input
             type="text"
             class="form-control"
@@ -25,6 +26,7 @@
       </div>
 
       <div class="col-4 offset-4 text-center mt-3">
+
         <button class="btn btn-success" @click="launchNewQuiz">GO !</button>
       </div>
 
@@ -63,8 +65,20 @@ export default {
       participationStorageService.savePlayerName(this.username.toString());
       const playerName = participationStorageService.getPlayerName();
       console.log("Launch new quiz with " + playerName);
-      this.$router.push("/questions-manager");
+      // this.$router.push("/questions-manager");
     },
   },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

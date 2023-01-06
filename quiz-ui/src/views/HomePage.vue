@@ -6,17 +6,21 @@
       </div>
 
       <!-- Leaderboard -->
+
       <div class="col-12">
-        <RankingsVue />
+        <RankingsVue :table="table" />
       </div>
+
       <!--  -->
 
       <div class="col-12 text-center">
         <button class="btn btn-success">
           <!-- hover effect to fix -->
-          <router-link class="text-light" to="/new-quiz-page"
-            >Let's start !</router-link
-          >
+
+          <transition name="fade">
+            <router-link class="text-light" to="/new-quiz-page">Let's start !</router-link>
+          </transition>
+
         </button>
       </div>
     </div>
@@ -33,6 +37,7 @@ export default {
     return {
       registeredScores: [],
       playerName: "",
+      table: "start",
     };
   },
 
@@ -45,6 +50,19 @@ export default {
 
     let quizInfo = await quizApiService.getQuizInfo();
     this.registeredScores = quizInfo.data;
+    console.log(this.table);
   },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
