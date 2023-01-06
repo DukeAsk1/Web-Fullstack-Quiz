@@ -6,7 +6,10 @@
       </div>
 
       <!-- Leaderboard -->
-      <RankingsVue :table="table" />
+      <div align="center">
+        <h2>The leaderboard for the quiz:</h2>
+        <RankingsVue :table="table" />
+      </div>
       <!--  -->
 
       <div class="col text-center">
