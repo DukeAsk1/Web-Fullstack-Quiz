@@ -338,7 +338,7 @@ def delete_all_participations():
     cur = db.cursor()
     cur.execute("begin")
     try:
-        cur.execute(f"DELETE FROM Participation")
+        cur.execute(f"DELETE FROM Attempts")
     except sqlite3.Error as e:
         # handle the error
         print(f'An error occurred: {e}')
