@@ -339,7 +339,7 @@ export default {
       reader.readAsText(file);
     },
     sendToPreviousPage() {
-      this.$router.push("/");
+      this.$router.go(-1);
     },
   },
 };
