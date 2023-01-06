@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" style="margin-top: 10rem">
     <div class="row g-3">
       <div class="col-4 offset-4 text-center">
         <h1>New quiz !</h1>
@@ -33,8 +33,7 @@
         role="alert"
         v-if="!username && wrongSubmit"
       >
-        <strong>Erreur !</strong> Veuillez entrer un pseudonyme dans le champ
-        ci-dessus
+        <strong>Error !</strong> Please enter a username in the above field
       </div>
     </div>
   </div>
