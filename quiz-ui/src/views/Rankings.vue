@@ -8,20 +8,21 @@
 
           </caption>
           <thead>
-            <tr>
+            <tr align="center">
               <th>Pseudo</th>
               <th>Score</th>
               <th>Date</th>
             </tr>
           </thead>
-          <tr v-if="table === 'start'" v-for="scoreEntry in registeredScores.scores" v-bind:key="scoreEntry.date">
+          <tr v-if="table === 'start'" v-for="scoreEntry in registeredScores.scores" v-bind:key="scoreEntry.date"
+            align="center">
             <th>{{ scoreEntry.playerName }}</th>
             <th>{{ scoreEntry.score }}</th>
             <th>{{ scoreEntry.date }}</th>
           </tr>
 
           <tr v-if="table === 'end'" v-for="scoreEntry in registeredScores.scores" v-bind:key="scoreEntry.date"
-            :class="getEndResult()">
+            :class="getEndResult()" align="center">
             <!-- :class="highlight_current_score(scoreEntry)"> -->
             <th>{{ scoreEntry.playerName }}</th>
             <th>{{ scoreEntry.score }}</th>
