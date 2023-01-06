@@ -6,7 +6,7 @@
       >
         <table class="table table-striped">
           <caption class="caption-top">
-            <h4>Leaderboard</h4>
+            <h4 class="text-dark">Leaderboard</h4>
           </caption>
           <thead>
             <tr>
