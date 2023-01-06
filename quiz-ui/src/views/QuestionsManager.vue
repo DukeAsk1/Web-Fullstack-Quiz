@@ -68,16 +68,9 @@ export default {
 
   async created() {
     this.currentQuestion = await this.loadQuestionByposition();
-    // this.currentQuestion.questionTitle = currentQuestion.data.title;
-    // this.currentQuestion.questionText = currentQuestion.data.text;
-    // this.currentQuestion.possibleAnswers = currentQuestion.data.possibleAnswers;
 
-    let nb_question = await this.getNumberOfQuestion();
-    this.totalNumberOfQuestion = nb_question.data.nb_question;
-    // this.value = this.value;
-    // console.log(this.selected.isCorrect);
-    //this.score = this.calculateScore(value);
-    //await this.getCorrectAnswer();
+    let nb_question = await quizApiService.getQuizInfo()
+    this.totalNumberOfQuestion = nb_question.data.size;
     this.token = participationStorageService.getToken();
 
     console.log(this.currentQuestion);
@@ -91,13 +84,9 @@ export default {
       let question_data = await current_question;
       return question_data.data;
     },
-    getNumberOfQuestion() {
-      return quizApiService.getNumberOfQuestion();
-    },
     async next_question() {
       console.log("TYPE DE SELECTED", typeof this.selected);
       console.log(this.selected);
-      // this.selected.position = this.currentQuestionPosition
       this.list_of_answers.push(this.selected);
       console.log("list of answers", this.list_of_answers);
       if (this.currentQuestionPosition == this.totalNumberOfQuestion) {
@@ -114,16 +103,12 @@ export default {
     },
     async endQuiz() {
       console.log("list of all answers", this.list_of_answers);
-      // const list_index = JSON.stringify(this.list_of_answers);
-      // console.log(list_index);
       const playerName = participationStorageService.getPlayerName();
       let result_quiz = await quizApiService.postParticipation({
         answers: this.list_of_answers,
         playerName: playerName,
       });
       console.log("JSON RESULT", result_quiz);
-      // const json_result = JSON.stringify(this.result_quiz);
-      // console.log('STRINGIFY', json_result)
       window.localStorage.setItem("result_quiz", JSON.stringify(result_quiz));
       this.result_quiz = {};
       this.$router.push("/result");

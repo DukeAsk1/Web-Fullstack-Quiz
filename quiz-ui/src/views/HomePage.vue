@@ -1,4 +1,5 @@
 <template>
+
   <div class="container" style="margin-top: 8rem">
     <div class="row gy-5">
       <div class="col-12 text-center">
@@ -6,11 +7,10 @@
       </div>
 
       <!-- Leaderboard -->
-
-      <div class="col-12">
+      <div align="center">
+        <h2>The leaderboard for the quiz:</h2>
         <RankingsVue :table="table" />
       </div>
-
       <!--  -->
 
       <div class="col-12 text-center">
