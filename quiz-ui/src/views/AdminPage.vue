@@ -1,57 +1,93 @@
 <template>
   <div v-if="token">
-    <div>
-      <button @click="logOut" class="btn btn-danger">LOG OUT</button>
-    </div>
-    <div>
-      <button @click="addQuestionHandler" class="btn btn-success">
-        Add A Question
-      </button>
-    </div>
-
-    <div>
-      <button @click="deleteAllQuestions" class="btn btn-danger">
-        DELETE ALL QUESTIONS
-      </button>
-      <button @click="deleteAllParticipations" class="btn btn-danger">
-        DELETE ALL PARTICIPATIONS
-      </button>
-    </div>
-
-    <QuestionList
-      v-if="action === 'view'"
-      :list_of_question="list_of_question"
-      @modify="modifyQuestionHandler"
-      @delete="deleteQuestionHandler"
-    />
-
-    <QuestionModifier
-      v-else-if="action === 'modifierQuestion'"
-      :question="question"
-      @update:question="updateQuestion"
-    />
-    <QuestionModifier
-      v-else-if="action === 'newQuestion'"
-      :question="question_form"
-      :action="action"
-      @update:question="postQuestion"
-      @post:json="postQuestion"
-    />
-  </div>
-
-  <div v-else>
-    <div class="container">
-      <div class="row">
-        <div class="col-4 offset-4 text-center">
-          <p>Enter Admin Password :</p>
+    <div class="row text-center w-50 m-auto mt-5">
+      <div class="col">
+        <div>
+          <button @click="logOut" class="btn btn-danger">Log out</button>
         </div>
       </div>
 
-      <div class="col-4 offset-4 text-center">
-        <input type="text" v-model="password" id="name" name="name" size="10" />
-        <button class="btn btn-success" type="button" @click="loginPlayer">
-          Connexion
+      <div class="col">
+        <div>
+          <button @click="addQuestionHandler" class="btn btn-success">
+            Add a question
+          </button>
+        </div>
+      </div>
+
+      <div class="col-3">
+        <button @click="deleteAllQuestions" class="btn btn-danger">
+          Delete all questions
         </button>
+      </div>
+      <div class="col-4">
+        <button @click="deleteAllParticipations" class="btn btn-danger">
+          Delete all participations
+        </button>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <QuestionList
+        v-if="action === 'view'"
+        :list_of_question="list_of_question"
+        @modify="modifyQuestionHandler"
+        @delete="deleteQuestionHandler"
+      />
+
+      <QuestionModifier
+        v-else-if="action === 'modifierQuestion'"
+        :question="question"
+        @update:question="updateQuestion"
+      />
+      <QuestionModifier
+        v-else-if="action === 'newQuestion'"
+        :question="question_form"
+        :action="action"
+        @update:question="postQuestion"
+        @post:json="postQuestion"
+      />
+    </div>
+  </div>
+
+  <div v-else>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-6 offset-3 text-center">
+          <h2>Enter Admin Password :</h2>
+        </div>
+      </div>
+
+      <div class="col-6 offset-3 text-center mt-5">
+        <div class="row gy-2">
+          <div class="col-6 offset-3">
+            <div class="form-floating mb-3">
+              <input
+                type="password"
+                class="form-control"
+                v-model="password"
+                id="name"
+                name="name"
+                placeholder="yourpassword"
+              />
+              <label class="text-dark" for="name">Admin password</label>
+            </div>
+          </div>
+
+          <div class="col-fluid">
+            <button class="btn btn-success" type="button" @click="loginPlayer">
+              Log in
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="col-6 offset-3 mt-3 text-center alert alert-danger alert-dismissible fade show"
+        role="alert"
+        v-if="!password && wrongSubmit"
+      >
+        <strong>Error !</strong> Please enter a password
       </div>
     </div>
   </div>
@@ -71,6 +107,7 @@ export default {
   data() {
     return {
       password: "",
+      wrongSubmit: false,
       token: null,
       action: "view",
       question: null,
@@ -96,6 +133,10 @@ export default {
   },
   methods: {
     async loginPlayer() {
+      if (this.password.toString() === "") {
+        this.wrongSubmit = true;
+        return;
+      }
       let login_info = quizApiService.login(this.password);
       let login_result = await login_info;
       if (login_result) {

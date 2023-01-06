@@ -1,34 +1,41 @@
 <template>
-  <div class="container">
+  <div class="container" style="margin-top: 10rem">
     <div class="row g-3">
       <div class="col-4 offset-4 text-center">
-        <h1>Nouveau quiz !</h1>
+        <h1>New quiz !</h1>
       </div>
 
       <div class="col-4 offset-4 text-center">
-        <p>Veuillez saisir votre pseudonyme :</p>
+        <p>Please enter your username</p>
       </div>
 
       <div class="col-4 offset-4">
         <!-- todo inputfloat -->
         <div class="form-floating mb-3">
-          <input type="text" class="form-control" v-model="username" id="name" name="name" placeholder="votrepseudo" />
-          <label class="text-dark" for="name">Pseudonyme</label>
+
+          <input
+            type="text"
+            class="form-control"
+            v-model="username"
+            id="name"
+            name="name"
+            placeholder="votrepseudo"
+          />
+          <label class="text-dark" for="name">Username</label>
         </div>
       </div>
 
       <div class="col-4 offset-4 text-center mt-3">
-        <Transition name="fade">
-          <RouterLink to="/questions-manager">
-            <button class="btn btn-success" @click="launchNewQuiz">GO!</button>
-          </RouterLink>
-        </Transition>
+
+        <button class="btn btn-success" @click="launchNewQuiz">GO !</button>
       </div>
 
-      <div class="col-6 offset-3 text-center alert alert-danger alert-dismissible fade show" role="alert"
-        v-if="!username && wrongSubmit">
-        <strong>Erreur !</strong> Veuillez entrer un pseudonyme dans le champ
-        ci-dessus
+      <div
+        class="col-6 offset-3 text-center alert alert-danger alert-dismissible fade show"
+        role="alert"
+        v-if="!username && wrongSubmit"
+      >
+        <strong>Error !</strong> Please enter a username in the above field
       </div>
     </div>
   </div>

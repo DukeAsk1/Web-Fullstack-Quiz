@@ -1,17 +1,22 @@
 <template>
-  <div class="container">
+  <div class="container" style="margin-top: 6rem">
     <div class="row">
       <div class="questions-manager">
         <h1 class="text text-center">
           Question {{ currentQuestionPosition }} / {{ totalNumberOfQuestion }}
         </h1>
 
-        <QuestionDisplay :question="currentQuestion" @answer-selected="answerClickedHandler" class="text-center" />
+        <QuestionDisplay
+          :question="currentQuestion"
+          @answer-selected="answerClickedHandler"
+          class="text-center"
+        />
       </div>
     </div>
 
     <div class="row">
       <div class="text-center">
+
         <Transition name="slide">
           <button v-if="currentQuestionPosition != totalNumberOfQuestion" @click="next_question"
             class="btn btn-success">
@@ -102,7 +107,6 @@ export default {
         this.currentQuestion = await this.loadQuestionByposition();
         this.selected = 0;
       }
-
     },
     async answerClickedHandler(value) {
       this.selected = value + 1;

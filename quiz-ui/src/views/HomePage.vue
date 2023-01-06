@@ -1,20 +1,26 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col text-center">
-        <h1>Page d'accueil</h1>
+  <div class="container" style="margin-top: 8rem">
+    <div class="row gy-5">
+      <div class="col-12 text-center">
+        <h1>HomePage</h1>
       </div>
 
       <!-- Leaderboard -->
-      <RankingsVue :table="table" />
+
+      <div class="col-12">
+        <RankingsVue :table="table" />
+      </div>
+
       <!--  -->
 
-      <div class="col text-center">
+      <div class="col-12 text-center">
         <button class="btn btn-success">
           <!-- hover effect to fix -->
+
           <transition name="fade">
-            <router-link class="text-light" to="/new-quiz-page">Démarrer le quiz !</router-link>
+            <router-link class="text-light" to="/new-quiz-page">Let's start !</router-link>
           </transition>
+
         </button>
       </div>
     </div>

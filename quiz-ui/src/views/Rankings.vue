@@ -1,10 +1,11 @@
 <template>
-  <div class="container-fluid">
+  <div class="container" style="height: 20vh">
     <div class="row">
       <div class="col-lg-6 offset-lg-3 justify-content-center align-items-center">
         <table class="table table-striped">
           <caption class="caption-top">
-            <h4 align="center">Scores précédents</h4>
+            <h4 align="center">Previous Scores</h4>
+
           </caption>
           <thead>
             <tr>
